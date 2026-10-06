@@ -257,15 +257,16 @@
 
     async function handleAddTenant(e) {
         e.preventDefault();
-        const newTenant = {
-            name: document.getElementById('inputTenantName').value,
-            phone: document.getElementById('inputTenantPhone').value,
-            email: document.getElementById('inputTenantEmail').value,
-            address: document.getElementById('inputTenantAddress').value,
-            move_in: document.getElementById('inputTenantMoveIn').value,
-            rent: parseFloat(document.getElementById('inputTenantRent').value),
-            status: 'Aktiv'
-        };
+const newTenant = {
+    name: document.getElementById('inputTenantName').value,
+    phone: document.getElementById('inputTenantPhone').value,
+    email: document.getElementById('inputTenantEmail').value,
+    address: document.getElementById('inputTenantAddress').value,
+    move_in: document.getElementById('inputTenantMoveIn').value,
+    rent: parseFloat(document.getElementById('inputTenantRent').value) || 0,
+    deposit: 0, // Setter standardverdi 0 så databasen blir fornøyd
+    status: 'Aktiv'
+};
 
         if (dbClient) {
             const { error } = await dbClient.from('tenants').insert([newTenant]);
