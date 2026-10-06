@@ -52,24 +52,6 @@
                 <a href="#" onclick="switchTab('payments')" id="nav-payments" class="nav-item flex items-center px-4 py-2.5 text-slate-300 hover:bg-slate-700/40 rounded-xl transition font-medium text-sm">
                     <i class="fa-solid fa-money-bill-wave w-6 text-base"></i><span>Innbetalinger</span>
                 </a>
-                <a href="#" onclick="switchTab('issues')" id="nav-issues" class="nav-item flex items-center px-4 py-2.5 text-slate-300 hover:bg-slate-700/40 rounded-xl transition font-medium text-sm">
-                    <i class="fa-solid fa-triangle-exclamation w-6 text-base"></i><span>Klager & Avvik</span>
-                </a>
-                <a href="#" onclick="switchTab('comms')" id="nav-comms" class="nav-item flex items-center px-4 py-2.5 text-slate-300 hover:bg-slate-700/40 rounded-xl transition font-medium text-sm">
-                    <i class="fa-solid fa-comments w-6 text-base"></i><span>Kommunikasjon</span>
-                </a>
-                <a href="#" onclick="switchTab('viewings')" id="nav-viewings" class="nav-item flex items-center px-4 py-2.5 text-slate-300 hover:bg-slate-700/40 rounded-xl transition font-medium text-sm">
-                    <i class="fa-solid fa-calendar-days w-6 text-base"></i><span>Visninger</span>
-                </a>
-                <a href="#" onclick="switchTab('inspections')" id="nav-inspections" class="nav-item flex items-center px-4 py-2.5 text-slate-300 hover:bg-slate-700/40 rounded-xl transition font-medium text-sm">
-                    <i class="fa-solid fa-clipboard-check w-6 text-base"></i><span>Inspeksjoner</span>
-                </a>
-                <a href="#" onclick="switchTab('documents')" id="nav-documents" class="nav-item flex items-center px-4 py-2.5 text-slate-300 hover:bg-slate-700/40 rounded-xl transition font-medium text-sm">
-                    <i class="fa-solid fa-folder-open w-6 text-base"></i><span>Dokumentarkiv</span>
-                </a>
-                <a href="#" onclick="switchTab('reports')" id="nav-reports" class="nav-item flex items-center px-4 py-2.5 text-slate-300 hover:bg-slate-700/40 rounded-xl transition font-medium text-sm">
-                    <i class="fa-solid fa-file-invoice-dollar w-6 text-base"></i><span>Rapporter</span>
-                </a>
             </nav>
         </div>
         <div class="p-4 border-t border-slate-700">
@@ -94,33 +76,28 @@
                     <h1 class="text-2xl md:text-3xl font-bold text-white">Utleier Dashbord</h1>
                     <p class="text-slate-400 text-sm">Oversikt og status for dine leieforhold</p>
                 </div>
-                <div class="flex space-x-2">
-                    <button onclick="openModal('newTenantModal')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-medium transition flex items-center gap-2 shadow-lg">
-                        <i class="fa-solid fa-plus"></i> Ny Leietaker
-                    </button>
-                    <button onclick="showToast('Påminnelser sendt på e-post!')" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-4 py-2 rounded-xl text-sm font-medium transition flex items-center gap-2">
-                        <i class="fa-solid fa-paper-plane"></i> Send Påminnelser
-                    </button>
-                </div>
+                <button onclick="openModal('newTenantModal')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-medium transition flex items-center gap-2 shadow-lg">
+                    <i class="fa-solid fa-plus"></i> Ny Leietaker
+                </button>
             </div>
 
-            <!-- KPI Cards Grid -->
+            <!-- Dashboard KPI Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="bg-slate-800 border border-slate-700/80 rounded-2xl p-4">
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4">
                     <span class="text-xs font-semibold text-slate-400 uppercase">Aktive leieforhold</span>
                     <div class="mt-2 text-2xl font-bold text-white" id="kpi-active-tenants">0</div>
                 </div>
-                <div class="bg-slate-800 border border-slate-700/80 rounded-2xl p-4">
-                    <span class="text-xs font-semibold text-slate-400 uppercase">Ubetalte Husleier</span>
-                    <div class="mt-2 text-2xl font-bold text-rose-400" id="kpi-unpaid-count">0</div>
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4">
+                    <span class="text-xs font-semibold text-slate-400 uppercase">Neste Husleie Forfall</span>
+                    <div class="mt-2 text-lg font-bold text-emerald-400" id="kpi-next-payment-due">-</div>
                 </div>
-                <div class="bg-slate-800 border border-slate-700/80 rounded-2xl p-4">
-                    <span class="text-xs font-semibold text-slate-400 uppercase">Åpne Avvik / Klager</span>
-                    <div class="mt-2 text-2xl font-bold text-amber-400" id="kpi-open-issues">0</div>
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4">
+                    <span class="text-xs font-semibold text-slate-400 uppercase">Neste Inspeksjon</span>
+                    <div class="mt-2 text-lg font-bold text-amber-400" id="kpi-next-inspection">-</div>
                 </div>
-                <div class="bg-slate-800 border border-slate-700/80 rounded-2xl p-4">
-                    <span class="text-xs font-semibold text-slate-400 uppercase">Planlagte Visninger</span>
-                    <div class="mt-2 text-2xl font-bold text-emerald-400" id="kpi-viewings-count">0</div>
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4">
+                    <span class="text-xs font-semibold text-slate-400 uppercase">Neste Kontrakt Utløp</span>
+                    <div class="mt-2 text-lg font-bold text-rose-400" id="kpi-next-contract-expiry">-</div>
                 </div>
             </div>
 
@@ -145,16 +122,21 @@
 
         <!-- TAB 3: KONTRAKTER -->
         <section id="tab-contracts" class="space-y-6 hidden">
-            <h1 class="text-2xl font-bold text-white">Leiekontrakter</h1>
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-white">Leiekontrakter</h1>
+                <button onclick="openModal('newContractModal')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-medium">
+                    <i class="fa-solid fa-plus"></i> Registrer Kontrakt
+                </button>
+            </div>
             <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 overflow-x-auto">
                 <table class="w-full text-left text-sm text-slate-300">
                     <thead class="bg-slate-900/80 text-xs uppercase text-slate-400">
                         <tr>
-                            <th class="p-4">Leietaker & Adresse</th>
+                            <th class="p-4">Leietaker</th>
                             <th class="p-4">Startdato</th>
-                            <th class="p-4">Mnd. Leie</th>
+                            <th class="p-4">Utløpsdato</th>
                             <th class="p-4">Depositum</th>
-                            <th class="p-4 text-right">Handling</th>
+                            <th class="p-4">Særlige bestemmelser</th>
                         </tr>
                     </thead>
                     <tbody id="contractsTableBody" class="divide-y divide-slate-700"></tbody>
@@ -164,94 +146,26 @@
 
         <!-- TAB 4: LEIEINNBETALINGER -->
         <section id="tab-payments" class="space-y-6 hidden">
-            <h1 class="text-2xl font-bold text-white">Leieinnbetalinger</h1>
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-white">Leieinnbetalinger</h1>
+                <button onclick="openModal('newPaymentModal')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-medium">
+                    <i class="fa-solid fa-plus"></i> Registrer Innbetaling
+                </button>
+            </div>
             <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 overflow-x-auto">
                 <table class="w-full text-left text-sm text-slate-300">
                     <thead class="bg-slate-900/80 text-xs uppercase text-slate-400">
                         <tr>
                             <th class="p-4">Måned</th>
                             <th class="p-4">Leietaker</th>
-                            <th class="p-4">Forfallsdato</th>
+                            <th class="p-4">Mottatt Dato</th>
                             <th class="p-4">Beløp</th>
                             <th class="p-4">Status</th>
-                            <th class="p-4 text-right">Handling</th>
+                            <th class="p-4">Kommentar</th>
                         </tr>
                     </thead>
                     <tbody id="paymentsTableBody" class="divide-y divide-slate-700"></tbody>
                 </table>
-            </div>
-        </section>
-
-        <!-- TAB 5: KLAGER OG AVVIK -->
-        <section id="tab-issues" class="space-y-6 hidden">
-            <div class="flex justify-between items-center">
-                <h1 class="text-2xl font-bold text-white">Klager og Avvik</h1>
-                <button onclick="openModal('newIssueModal')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-medium">
-                    <i class="fa-solid fa-plus"></i> Registrer Avvik
-                </button>
-            </div>
-            <div id="issuesListContainer" class="space-y-4"></div>
-        </section>
-
-        <!-- TAB 6: KOMMUNIKASJON -->
-        <section id="tab-comms" class="space-y-6 hidden">
-            <div class="flex justify-between items-center">
-                <h1 class="text-2xl font-bold text-white">Kommunikasjonslogg</h1>
-                <button onclick="openModal('newCommModal')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-medium">
-                    <i class="fa-solid fa-plus"></i> Loggfør Henvendelse
-                </button>
-            </div>
-            <div id="commLogContainer" class="space-y-4"></div>
-        </section>
-
-        <!-- TAB 7: VISNINGER -->
-        <section id="tab-viewings" class="space-y-6 hidden">
-            <div class="flex justify-between items-center">
-                <h1 class="text-2xl font-bold text-white">Visningskalender</h1>
-                <button onclick="openModal('newViewingModal')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-medium">
-                    <i class="fa-solid fa-calendar-plus"></i> Ny Visning
-                </button>
-            </div>
-            <div id="viewingsListContainer" class="space-y-4"></div>
-        </section>
-
-        <!-- TAB 8: INSPEKSJONER -->
-        <section id="tab-inspections" class="space-y-6 hidden">
-            <div class="flex justify-between items-center">
-                <h1 class="text-2xl font-bold text-white">Periodiske Inspeksjoner</h1>
-                <button onclick="openModal('newInspectionModal')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-medium">
-                    <i class="fa-solid fa-clipboard-check"></i> Ny Inspeksjon
-                </button>
-            </div>
-            <div id="inspectionLogList" class="space-y-4"></div>
-        </section>
-
-        <!-- TAB 9: DOKUMENTARKIV -->
-        <section id="tab-documents" class="space-y-6 hidden">
-            <div class="flex justify-between items-center">
-                <h1 class="text-2xl font-bold text-white">Dokumentarkiv</h1>
-                <button onclick="showToast('Filopplasting simulert!')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-medium">
-                    <i class="fa-solid fa-upload"></i> Last opp Dokument
-                </button>
-            </div>
-            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5" id="documentArchiveGrid"></div>
-        </section>
-
-        <!-- TAB 10: RAPPORTER -->
-        <section id="tab-reports" class="space-y-6 hidden">
-            <div class="flex justify-between items-center">
-                <h1 class="text-2xl font-bold text-white">Rapporter & Eksport</h1>
-                <div class="flex space-x-2">
-                    <button onclick="showToast('Eksport til Excel utført.')" class="bg-emerald-700 hover:bg-emerald-600 text-white px-4 py-2 rounded-xl text-sm font-medium">
-                        <i class="fa-solid fa-file-excel"></i> Excel
-                    </button>
-                    <button onclick="showToast('Genererer PDF-rapport...')" class="bg-rose-700 hover:bg-rose-600 text-white px-4 py-2 rounded-xl text-sm font-medium">
-                        <i class="fa-solid fa-file-pdf"></i> PDF
-                    </button>
-                </div>
-            </div>
-            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 text-slate-300">
-                <p>Oversikt og rapporter genereres automatisk basert på registrerte data i databasen.</p>
             </div>
         </section>
     </main>
@@ -268,6 +182,10 @@
                     <div>
                         <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Fullt Navn *</label>
                         <input type="text" id="inputTenantName" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Fødselsdato / Personnr</label>
+                        <input type="text" id="inputTenantPnr" placeholder="f.eks. 01019012345" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Telefon *</label>
@@ -290,14 +208,10 @@
                         <input type="number" id="inputTenantRent" value="10500" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Depositum Beløp (NOK)</label>
-                        <input type="number" id="inputTenantDeposit" value="31500" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Depositum Status</label>
-                        <select id="inputTenantDepositStatus" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
-                            <option value="Ikke mottatt">Mangler / Venter</option>
-                            <option value="Mottatt">Mottatt & Bekreftet</option>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Status</label>
+                        <select id="inputTenantStatus" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
+                            <option value="Aktiv">Aktiv</option>
+                            <option value="Opphørt">Opphørt</option>
                         </select>
                     </div>
                 </div>
@@ -309,48 +223,92 @@
         </div>
     </div>
 
-    <!-- MODAL: REGISTRER AVVIK / KLAGE -->
-    <div id="newIssueModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <!-- MODAL: REGISTRER KONTRAKT -->
+    <div id="newContractModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-800 border border-slate-700 w-full max-w-lg rounded-2xl p-6 shadow-2xl">
             <div class="flex justify-between items-center mb-6 border-b border-slate-700 pb-3">
-                <h3 class="text-xl font-bold text-white"><i class="fa-solid fa-triangle-exclamation text-amber-400 mr-2"></i> Registrer Avvik / Klage</h3>
-                <button onclick="closeModal('newIssueModal')" class="text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+                <h3 class="text-xl font-bold text-white"><i class="fa-solid fa-file-contract text-emerald-400 mr-2"></i> Ny Kontrakt</h3>
+                <button onclick="closeModal('newContractModal')" class="text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <form onsubmit="handleAddIssue(event)" class="space-y-4">
+            <form onsubmit="handleAddContract(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Gjelder Leietaker *</label>
-                    <select id="inputIssueTenant" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none"></select>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Leietaker *</label>
+                    <select id="inputContractTenant" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none"></select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Startdato *</label>
+                        <input type="date" id="inputContractStart" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Utløpsdato</label>
+                        <input type="date" id="inputContractEnd" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
+                    </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Kategori *</label>
-                    <input type="text" id="inputIssueCategory" placeholder="f.eks. Støy, Renhold, Skade" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
+                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Depositum (NOK)</label>
+                    <input type="number" id="inputContractDeposit" value="31500" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Alvorlighetsgrad *</label>
-                    <select id="inputIssueSeverity" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
-                        <option value="LAV">LAV</option>
-                        <option value="MIDDELS">MIDDELS</option>
-                        <option value="HØY">HØY</option>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Særlige Bestemmelser</label>
+                    <textarea id="inputContractTerms" placeholder="f.eks. Røyking forbudt, Husdyr tillatt etter avtale" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" rows="3"></textarea>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4 border-t border-slate-700">
+                    <button type="button" onclick="closeModal('newContractModal')" class="px-4 py-2 bg-slate-700 text-slate-300 rounded-xl text-sm">Avbryt</button>
+                    <button type="submit" class="px-5 py-2 bg-emerald-600 text-white rounded-xl text-sm hover:bg-emerald-500">Lagre Kontrakt</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: REGISTRER INNBETALING -->
+    <div id="newPaymentModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-800 border border-slate-700 w-full max-w-lg rounded-2xl p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-6 border-b border-slate-700 pb-3">
+                <h3 class="text-xl font-bold text-white"><i class="fa-solid fa-money-bill-wave text-emerald-400 mr-2"></i> Registrer Innbetaling</h3>
+                <button onclick="closeModal('newPaymentModal')" class="text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="handleAddPayment(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Leietaker *</label>
+                    <select id="inputPayTenant" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none"></select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Mottatt Dato *</label>
+                        <input type="date" id="inputPayDate" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Sum (NOK) *</label>
+                        <input type="number" id="inputPayAmount" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Status *</label>
+                    <select id="inputPayStatus" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
+                        <option value="Betalt">Betalt</option>
+                        <option value="Forsinket">Forsinket</option>
+                        <option value="Delvis betalt">Delvis betalt</option>
+                        <option value="Til behandling">Til behandling</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Beskrivelse *</label>
-                    <textarea id="inputIssueDesc" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none" rows="3"></textarea>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Kommentar</label>
+                    <input type="text" id="inputPayComment" placeholder="f.eks. Betalt via Vipps" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
                 </div>
                 <div class="flex justify-end space-x-3 pt-4 border-t border-slate-700">
-                    <button type="button" onclick="closeModal('newIssueModal')" class="px-4 py-2 bg-slate-700 text-slate-300 rounded-xl text-sm">Avbryt</button>
-                    <button type="submit" class="px-5 py-2 bg-emerald-600 text-white rounded-xl text-sm hover:bg-emerald-500">Lagre Avvik</button>
+                    <button type="button" onclick="closeModal('newPaymentModal')" class="px-4 py-2 bg-slate-700 text-slate-300 rounded-xl text-sm">Avbryt</button>
+                    <button type="submit" class="px-5 py-2 bg-emerald-600 text-white rounded-xl text-sm hover:bg-emerald-500">Lagre Betaling</button>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-    // 1. Globale navigasjons- og hjelpefunksjoner
     function openModal(id) {
         var el = document.getElementById(id);
         if (el) el.classList.remove('hidden');
-        if (id === 'newIssueModal') populateTenantSelects();
+        if (id === 'newContractModal' || id === 'newPaymentModal') populateTenantDropdowns();
     }
 
     function closeModal(id) {
@@ -368,9 +326,7 @@
             item.classList.add('text-slate-300');
         });
         var activeNav = document.getElementById('nav-' + tabName);
-        if (activeNav) {
-            activeNav.classList.add('text-emerald-400', 'bg-slate-700/60');
-        }
+        if (activeNav) activeNav.classList.add('text-emerald-400', 'bg-slate-700/60');
         var sidebar = document.getElementById('sidebar');
         if (sidebar) sidebar.classList.add('-translate-x-full');
     }
@@ -380,7 +336,7 @@
         if (sidebar) sidebar.classList.toggle('-translate-x-full');
     }
 
-    // 2. Supabase Oppsett
+    // Supabase Oppsett
     const SUPABASE_URL = 'https://etuhkmoekcseewixotky.supabase.co'; 
     const SUPABASE_ANON_KEY = 'sb_publishable_qFKWpV-h1B4oXuHT1OfvPA_YmKEyHYD';
     
@@ -389,7 +345,7 @@
         dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     }
 
-    const state = { tenants: [], payments: [], issues: [], communications: [], viewings: [], inspections: [] };
+    const state = { tenants: [], contracts: [], payments: [], inspections: [] };
 
     async function loadDataFromSupabase() {
         if (!dbClient) return;
@@ -397,20 +353,17 @@
             const { data: tenants } = await dbClient.from('tenants').select('*');
             state.tenants = tenants || [];
 
+            const { data: contracts } = await dbClient.from('contracts').select('*');
+            state.contracts = contracts || [];
+
             const { data: payments } = await dbClient.from('payments').select('*');
             state.payments = payments || [];
 
-            const { data: issues } = await dbClient.from('issues').select('*');
-            state.issues = issues || [];
-
-            const { data: comms } = await dbClient.from('communications').select('*');
-            state.communications = comms || [];
-
-            const { data: viewings } = await dbClient.from('viewings').select('*');
-            state.viewings = viewings || [];
-
             const { data: inspections } = await dbClient.from('inspections').select('*');
             state.inspections = inspections || [];
+
+            // Automatisk sjekk/generering av månedlige betalingskrav (1. i hver måned)
+            await checkAndGenerateMonthlyPayments();
 
             renderAll();
         } catch (err) {
@@ -418,62 +371,125 @@
         }
     }
 
+    // Genererer automatisk husleielinje for alle aktive leietakere hvis det mangler for inneværende måned
+    async function checkAndGenerateMonthlyPayments() {
+        const now = new Date();
+        const currentPeriod = now.toLocaleString('no-NO', { month: 'long', year: 'numeric' });
+        const activeTenants = state.tenants.filter(t => t.status === 'Aktiv');
+
+        for (const tenant of activeTenants) {
+            const exists = state.payments.some(p => p.tenant_id === tenant.id && p.period === currentPeriod);
+            if (!exists) {
+                const dueDate = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+                const newPay = {
+                    tenant_id: tenant.id,
+                    period: currentPeriod,
+                    due_date: dueDate,
+                    amount: tenant.rent || 0,
+                    status: 'Til behandling'
+                };
+                await dbClient.from('payments').insert([newPay]);
+            }
+        }
+    }
+
     function renderAll() {
         renderTenants();
         renderContracts();
         renderPayments();
-        renderIssues();
-        renderCommunications();
-        renderViewings();
-        renderInspections();
-        renderDocuments();
+        renderDashboardKPIs();
         initChart();
+    }
+
+    function renderDashboardKPIs() {
+        const activeTenants = state.tenants.filter(t => t.status === 'Aktiv');
+        document.getElementById('kpi-active-tenants').innerText = activeTenants.length;
+
+        // Neste husleie forfall
+        document.getElementById('kpi-next-payment-due').innerText = '1. i neste mnd';
+
+        // Neste inspeksjon
+        if (state.inspections.length > 0) {
+            document.getElementById('kpi-next-inspection').innerText = state.inspections[0].date || '-';
+        } else {
+            document.getElementById('kpi-next-inspection').innerText = 'Ingen planlagt';
+        }
+
+        // Neste kontrakt utløp
+        const contractsWithEnd = state.contracts.filter(c => c.end_date).sort((a,b) => new Date(a.end_date) - new Date(b.end_date));
+        if (contractsWithEnd.length > 0) {
+            document.getElementById('kpi-next-contract-expiry').innerText = contractsWithEnd[0].end_date;
+        } else {
+            document.getElementById('kpi-next-contract-expiry').innerText = 'Tidsubestemt';
+        }
     }
 
     async function handleAddTenant(e) {
         e.preventDefault();
         const newTenant = {
             name: document.getElementById('inputTenantName').value,
+            dob_or_pnr: document.getElementById('inputTenantPnr').value || null,
             phone: document.getElementById('inputTenantPhone').value,
             email: document.getElementById('inputTenantEmail').value,
             address: document.getElementById('inputTenantAddress').value,
             move_in: document.getElementById('inputTenantMoveIn').value,
             rent: parseFloat(document.getElementById('inputTenantRent').value) || 0,
-            deposit: parseFloat(document.getElementById('inputTenantDeposit').value) || 0,
-            deposit_status: document.getElementById('inputTenantDepositStatus').value || 'Ikke mottatt',
-            status: 'Aktiv'
+            status: document.getElementById('inputTenantStatus').value || 'Aktiv'
         };
 
         if (dbClient) {
             const { error } = await dbClient.from('tenants').insert([newTenant]);
-            if (error) { 
-                alert('Feil ved lagring i databasen: ' + error.message); 
-                return; 
-            }
-        }
-
-        closeModal('newTenantModal');
-        showToast('Ny leietaker ble lagret!');
-        loadDataFromSupabase();
-    }
-
-    async function handleAddIssue(e) {
-        e.preventDefault();
-        const newIssue = {
-            tenant_id: parseInt(document.getElementById('inputIssueTenant').value),
-            date: new Date().toISOString().split('T')[0],
-            category: document.getElementById('inputIssueCategory').value,
-            severity: document.getElementById('inputIssueSeverity').value,
-            description: document.getElementById('inputIssueDesc').value
-        };
-
-        if (dbClient) {
-            const { error } = await dbClient.from('issues').insert([newIssue]);
             if (error) { alert('Feil ved lagring: ' + error.message); return; }
         }
 
-        closeModal('newIssueModal');
-        showToast('Avvik registrert!');
+        closeModal('newTenantModal');
+        showToast('Leietaker lagret!');
+        loadDataFromSupabase();
+    }
+
+    async function handleAddContract(e) {
+        e.preventDefault();
+        const newContract = {
+            tenant_id: parseInt(document.getElementById('inputContractTenant').value),
+            start_date: document.getElementById('inputContractStart').value,
+            end_date: document.getElementById('inputContractEnd').value || null,
+            rent_amount: 0,
+            deposit_amount: parseFloat(document.getElementById('inputContractDeposit').value) || 0,
+            special_terms: document.getElementById('inputContractTerms').value || null
+        };
+
+        if (dbClient) {
+            const { error } = await dbClient.from('contracts').insert([newContract]);
+            if (error) { alert('Feil ved lagring: ' + error.message); return; }
+        }
+
+        closeModal('newContractModal');
+        showToast('Kontrakt lagret!');
+        loadDataFromSupabase();
+    }
+
+    async function handleAddPayment(e) {
+        e.preventDefault();
+        const now = new Date();
+        const currentPeriod = now.toLocaleString('no-NO', { month: 'long', year: 'numeric' });
+
+        const newPay = {
+            tenant_id: parseInt(document.getElementById('inputPayTenant').value),
+            period: currentPeriod,
+            due_date: new Date().toISOString().split('T')[0],
+            received_date: document.getElementById('inputPayDate').value,
+            amount: parseFloat(document.getElementById('inputPayAmount').value) || 0,
+            status: document.getElementById('inputPayStatus').value,
+            comment: document.getElementById('inputPayComment').value || null
+        };
+
+        if (dbClient) {
+            const { error } = await dbClient.from('payments').insert([newPay]);
+            if (error) { alert('Feil ved lagring: ' + error.message); return; }
+        }
+
+        closeModal('newPaymentModal');
+        showToast('Innbetaling registrert!');
         loadDataFromSupabase();
     }
 
@@ -483,17 +499,23 @@
         grid.innerHTML = '';
 
         if (state.tenants.length === 0) {
-            grid.innerHTML = '<p class="text-slate-400 col-span-3 text-center py-8">Ingen leietakere registrert. Klikk "+ Ny Leietaker".</p>';
-            document.getElementById('kpi-active-tenants').innerText = '0';
+            grid.innerHTML = '<p class="text-slate-400 col-span-3 text-center py-8">Ingen leietakere registrert.</p>';
             return;
         }
 
         state.tenants.forEach(tenant => {
+            const isOpphort = tenant.status === 'Opphørt';
             const card = document.createElement('div');
-            card.className = "bg-slate-800 border border-slate-700 rounded-2xl p-5";
+            card.className = "bg-slate-800 border border-slate-700 rounded-2xl p-5 relative";
             card.innerHTML = `
-                <h3 class="font-bold text-white text-lg">${tenant.name || 'Uten navn'}</h3>
-                <p class="text-xs text-slate-400">${tenant.phone || '-'}</p>
+                <div class="flex justify-between items-start">
+                    <h3 class="font-bold text-white text-lg">${tenant.name}</h3>
+                    <span class="px-2 py-1 text-xs rounded font-semibold ${isOpphort ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'}">
+                        ${tenant.status || 'Aktiv'}
+                    </span>
+                </div>
+                <p class="text-xs text-slate-400">Pnr/F.dato: ${tenant.dob_or_pnr || '-'}</p>
+                <p class="text-xs text-slate-400">Tlf: ${tenant.phone || '-'}</p>
                 <div class="mt-4 text-xs text-slate-300 space-y-1">
                     <div><i class="fa-solid fa-location-dot w-4"></i> ${tenant.address || '-'}</div>
                     <div><i class="fa-solid fa-money-bill w-4"></i> ${(tenant.rent || 0).toLocaleString()} kr / mnd</div>
@@ -501,8 +523,6 @@
             `;
             grid.appendChild(card);
         });
-
-        document.getElementById('kpi-active-tenants').innerText = state.tenants.length;
     }
 
     function renderContracts() {
@@ -510,19 +530,20 @@
         if (!table) return;
         table.innerHTML = '';
 
-        if (state.tenants.length === 0) {
-            table.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-400">Ingen kontrakter.</td></tr>';
+        if (state.contracts.length === 0) {
+            table.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-400">Ingen kontrakter registrert.</td></tr>';
             return;
         }
 
-        state.tenants.forEach(tenant => {
+        state.contracts.forEach(contract => {
+            const tenant = state.tenants.find(t => t.id === contract.tenant_id);
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td class="p-4 font-semibold text-white">${tenant.name || '-'}<br><span class="text-xs text-slate-400">${tenant.address || ''}</span></td>
-                <td class="p-4">${tenant.move_in || '-'}</td>
-                <td class="p-4 font-semibold text-white">${(tenant.rent || 0).toLocaleString()} kr</td>
-                <td class="p-4">${(tenant.deposit || 0).toLocaleString()} kr</td>
-                <td class="p-4 text-right"><button onclick="alert('PDF-visning')" class="text-xs bg-slate-700 px-3 py-1 rounded">Vis PDF</button></td>
+                <td class="p-4 font-semibold text-white">${tenant ? tenant.name : 'Ukjent'}</td>
+                <td class="p-4">${contract.start_date || '-'}</td>
+                <td class="p-4">${contract.end_date || 'Tidsubestemt'}</td>
+                <td class="p-4 font-semibold text-white">${(contract.deposit_amount || 0).toLocaleString()} kr</td>
+                <td class="p-4 text-xs text-slate-300">${contract.special_terms || 'Standard vilkår'}</td>
             `;
             table.appendChild(tr);
         });
@@ -534,85 +555,41 @@
         table.innerHTML = '';
 
         if (state.payments.length === 0) {
-            table.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-400">Ingen innkrevde betalinger loggført.</td></tr>';
-            document.getElementById('kpi-unpaid-count').innerText = '0';
+            table.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-400">Ingen innbetalinger registrert.</td></tr>';
             return;
         }
 
         state.payments.forEach(pay => {
             const tenant = state.tenants.find(t => t.id === pay.tenant_id);
+            let statusColor = 'text-amber-400';
+            if (pay.status === 'Betalt') statusColor = 'text-emerald-400';
+            if (pay.status === 'Forsinket') statusColor = 'text-rose-400';
+
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td class="p-4 font-semibold text-white">${pay.period || '-'}</td>
                 <td class="p-4">${tenant ? tenant.name : 'Ukjent'}</td>
-                <td class="p-4">${pay.due_date || '-'}</td>
+                <td class="p-4">${pay.received_date || '-'}</td>
                 <td class="p-4 font-semibold text-white">${(pay.amount || 0).toLocaleString()} kr</td>
-                <td class="p-4"><span class="px-2 py-1 text-xs rounded bg-slate-700">${pay.status || 'Ikke betalt'}</span></td>
-                <td class="p-4 text-right"><button onclick="showToast('Betaling registrert')" class="text-xs bg-emerald-600 px-3 py-1 rounded">Endre</button></td>
+                <td class="p-4 font-semibold ${statusColor}">${pay.status || 'Til behandling'}</td>
+                <td class="p-4 text-xs text-slate-400">${pay.comment || '-'}</td>
             `;
             table.appendChild(tr);
         });
     }
 
-    function renderIssues() {
-        const container = document.getElementById('issuesListContainer');
-        if (!container) return;
-        container.innerHTML = '';
+    function populateTenantDropdowns() {
+        const contractSel = document.getElementById('inputContractTenant');
+        const paySel = document.getElementById('inputPayTenant');
 
-        if (state.issues.length === 0) {
-            container.innerHTML = '<p class="text-slate-400 text-center py-4">Ingen registrerte avvik.</p>';
-            document.getElementById('kpi-open-issues').innerText = '0';
-            return;
-        }
-
-        state.issues.forEach(issue => {
-            const tenant = state.tenants.find(t => t.id === issue.tenant_id);
-            const div = document.createElement('div');
-            div.className = "p-4 bg-slate-800 border border-slate-700 rounded-xl flex justify-between items-center";
-            div.innerHTML = `
-                <div>
-                    <span class="text-xs text-amber-400 font-bold">${issue.severity || 'LAV'}</span>
-                    <h4 class="font-bold text-white">${issue.description || 'Ingen beskrivelse'}</h4>
-                    <p class="text-xs text-slate-400">Gjelder: ${tenant ? tenant.name : 'Ukjent'} (${issue.category || ''})</p>
-                </div>
-            `;
-            container.appendChild(div);
+        const activeTenants = state.tenants.filter(t => t.status === 'Aktiv');
+        let optionsHtml = '';
+        activeTenants.forEach(t => {
+            optionsHtml += `<option value="${t.id}">${t.name}</option>`;
         });
-        document.getElementById('kpi-open-issues').innerText = state.issues.length;
-    }
 
-    function renderCommunications() {
-        const container = document.getElementById('commLogContainer');
-        if (!container) return;
-        container.innerHTML = state.communications.length === 0 ? '<p class="text-slate-400 text-center py-4">Ingen loggførte samtaler.</p>' : '';
-    }
-
-    function renderViewings() {
-        const container = document.getElementById('viewingsListContainer');
-        if (!container) return;
-        container.innerHTML = state.viewings.length === 0 ? '<p class="text-slate-400 text-center py-4">Ingen planlagte visninger.</p>' : '';
-        document.getElementById('kpi-viewings-count').innerText = state.viewings.length;
-    }
-
-    function renderInspections() {
-        const container = document.getElementById('inspectionLogList');
-        if (!container) return;
-        container.innerHTML = state.inspections.length === 0 ? '<p class="text-slate-400 text-center py-4">Ingen gjennomførte inspeksjoner.</p>' : '';
-    }
-
-    function renderDocuments() {
-        const grid = document.getElementById('documentArchiveGrid');
-        if (!grid) return;
-        grid.innerHTML = '<p class="text-slate-400 text-center py-4">Ingen dokumenter i arkivet.</p>';
-    }
-
-    function populateTenantSelects() {
-        const sel = document.getElementById('inputIssueTenant');
-        if (!sel) return;
-        sel.innerHTML = '';
-        state.tenants.forEach(t => {
-            sel.innerHTML += `<option value="${t.id}">${t.name}</option>`;
-        });
+        if (contractSel) contractSel.innerHTML = optionsHtml;
+        if (paySel) paySel.innerHTML = optionsHtml;
     }
 
     function showToast(msg) {
