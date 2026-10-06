@@ -79,27 +79,50 @@
                     <h1 class="text-2xl md:text-3xl font-bold text-white">Utleier Dashbord</h1>
                     <p class="text-slate-400 text-sm">Oversikt og status for dine leieforhold</p>
                 </div>
-                <button onclick="openModal('tenantModal')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-medium transition flex items-center gap-2 shadow-lg">
+                <button onclick="openTenantModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-medium transition flex items-center gap-2 shadow-lg">
                     <i class="fa-solid fa-plus"></i> Ny Leietaker
                 </button>
             </div>
 
-            <!-- KPI Cards -->
+            <!-- KPI Cards med Ikoner -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4">
-                    <span class="text-xs font-semibold text-slate-400 uppercase">Aktive leieforhold</span>
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 relative overflow-hidden">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Aktive Leieforhold</span>
+                        <div class="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                            <i class="fa-solid fa-users text-lg"></i>
+                        </div>
+                    </div>
                     <div class="mt-2 text-2xl font-bold text-white" id="kpi-active-tenants">0</div>
                 </div>
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4">
-                    <span class="text-xs font-semibold text-slate-400 uppercase">Neste Husleie Forfall</span>
-                    <div class="mt-2 text-lg font-bold text-emerald-400" id="kpi-next-payment-due">-</div>
+
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 relative overflow-hidden">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Neste Husleie Forfall</span>
+                        <div class="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center">
+                            <i class="fa-solid fa-calendar-day text-lg"></i>
+                        </div>
+                    </div>
+                    <div class="mt-2 text-lg font-bold text-blue-400" id="kpi-next-payment-due">-</div>
                 </div>
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4">
-                    <span class="text-xs font-semibold text-slate-400 uppercase">Neste Inspeksjon</span>
-                    <div class="mt-2 text-lg font-bold text-purple-400">1. mandag i kvartalet</div>
+
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 relative overflow-hidden">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Neste Inspeksjon</span>
+                        <div class="w-9 h-9 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass text-lg"></i>
+                        </div>
+                    </div>
+                    <div class="mt-2 text-lg font-bold text-purple-400" id="kpi-next-inspection">-</div>
                 </div>
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4">
-                    <span class="text-xs font-semibold text-slate-400 uppercase">Neste Kontrakt Utløp</span>
+
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 relative overflow-hidden">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Neste Kontrakt Utløp</span>
+                        <div class="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center">
+                            <i class="fa-solid fa-file-contract text-lg"></i>
+                        </div>
+                    </div>
                     <div class="mt-2 text-lg font-bold text-rose-400" id="kpi-next-contract-expiry">-</div>
                 </div>
             </div>
@@ -177,39 +200,14 @@
         <!-- TAB 8: INSPEKSJONER -->
         <section id="tab-inspections" class="space-y-6 hidden">
             <div class="flex justify-between items-center">
-                <h1 class="text-2xl font-bold text-white">Inspeksjoner</h1>
+                <h1 class="text-2xl font-bold text-white">Inspeksjoner (10 Års Plan)</h1>
                 <button onclick="openInspectionModal()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-xl text-sm font-medium">
                     <i class="fa-solid fa-clipboard-check"></i> Gjennomfør Inspeksjon
                 </button>
             </div>
 
-            <!-- Fastlagte Kvartalsvise Inspeksjoner -->
             <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
                 <h3 class="font-bold text-white mb-4">Fastlagte Kvartalsvise Inspeksjoner (Mandager 17:00–17:30)</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                    <div class="p-4 bg-slate-900 border border-slate-700 rounded-xl">
-                        <span class="text-xs font-semibold text-purple-400">Q1 - Januar</span>
-                        <div class="font-bold text-white mt-1">Første mandag i Jan</div>
-                        <div class="text-xs text-slate-400 mt-1">Kl. 17:00 - 17:30</div>
-                    </div>
-                    <div class="p-4 bg-slate-900 border border-slate-700 rounded-xl">
-                        <span class="text-xs font-semibold text-purple-400">Q2 - April</span>
-                        <div class="font-bold text-white mt-1">Første mandag i Apr</div>
-                        <div class="text-xs text-slate-400 mt-1">Kl. 17:00 - 17:30</div>
-                    </div>
-                    <div class="p-4 bg-slate-900 border border-slate-700 rounded-xl">
-                        <span class="text-xs font-semibold text-purple-400">Q3 - Juli</span>
-                        <div class="font-bold text-white mt-1">Første mandag i Jul</div>
-                        <div class="text-xs text-slate-400 mt-1">Kl. 17:00 - 17:30</div>
-                    </div>
-                    <div class="p-4 bg-slate-900 border-2 border-purple-500/50 rounded-xl">
-                        <span class="text-xs font-semibold text-amber-400">Q4 - Oktober</span>
-                        <div class="font-bold text-white mt-1">Første mandag i Okt</div>
-                        <div class="text-xs text-slate-400 mt-1">Kl. 17:00 - 17:30</div>
-                    </div>
-                </div>
-
-                <h4 class="font-semibold text-slate-300 mb-3">Gjennomførte / Registrerte Inspeksjoner</h4>
                 <div class="space-y-3" id="inspectionLogList"></div>
             </div>
         </section>
@@ -316,11 +314,11 @@
         </div>
     </div>
 
-    <!-- MODAL: REGISTRER/REDIGER BETALING -->
+    <!-- MODAL: REGISTRER/REDIGER/SLETT BETALING -->
     <div id="paymentModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-800 border border-slate-700 w-full max-w-lg rounded-2xl p-6 shadow-2xl">
             <div class="flex justify-between items-center mb-6 border-b border-slate-700 pb-3">
-                <h3 class="text-xl font-bold text-white">Behandle / Rediger Innbetaling</h3>
+                <h3 class="text-xl font-bold text-white">Behandle Innbetaling</h3>
                 <button onclick="closeModal('paymentModal')" class="text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form onsubmit="handleSavePayment(event)" class="space-y-4">
@@ -352,9 +350,12 @@
                     <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Kommentar</label>
                     <input type="text" id="inputPayComment" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
                 </div>
-                <div class="flex justify-end space-x-3 pt-4 border-t border-slate-700">
-                    <button type="button" onclick="closeModal('paymentModal')" class="px-4 py-2 bg-slate-700 text-slate-300 rounded-xl text-sm">Avbryt</button>
-                    <button type="submit" class="px-5 py-2 bg-emerald-600 text-white rounded-xl text-sm hover:bg-emerald-500">Lagre Betaling</button>
+                <div class="flex justify-between items-center pt-4 border-t border-slate-700">
+                    <button type="button" onclick="handleDeletePayment()" class="px-4 py-2 bg-rose-600/20 text-rose-400 hover:bg-rose-600 hover:text-white rounded-xl text-sm transition">Slett Rad</button>
+                    <div class="flex space-x-2">
+                        <button type="button" onclick="closeModal('paymentModal')" class="px-4 py-2 bg-slate-700 text-slate-300 rounded-xl text-sm">Avbryt</button>
+                        <button type="submit" class="px-5 py-2 bg-emerald-600 text-white rounded-xl text-sm hover:bg-emerald-500">Lagre</button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -371,7 +372,7 @@
                 <input type="hidden" id="editInspectionId">
                 <div>
                     <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Leietaker *</label>
-                    <select id="inputInspectionTenant" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none"></select>
+                    <select id="inputInspectionTenant" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none"></select>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Dato for Inspeksjon *</label>
@@ -450,7 +451,7 @@
             const { data: payments } = await dbClient.from('payments').select('*');
             state.payments = payments || [];
 
-            const { data: inspections } = await dbClient.from('inspections').select('*');
+            const { data: inspections } = await dbClient.from('inspections').select('*').order('date', { ascending: true });
             state.inspections = inspections || [];
 
             await checkAndGenerateMonthlyPayments();
@@ -495,6 +496,15 @@
         document.getElementById('kpi-active-tenants').innerText = activeTenants.length;
         document.getElementById('kpi-next-payment-due').innerText = '1. i neste mnd';
 
+        // Neste Inspeksjon fra databasen
+        const today = new Date().toISOString().split('T')[0];
+        const nextInspection = state.inspections.find(i => i.date >= today);
+        if (nextInspection) {
+            document.getElementById('kpi-next-inspection').innerText = nextInspection.date;
+        } else {
+            document.getElementById('kpi-next-inspection').innerText = 'Ingen planlagt';
+        }
+
         const contractsWithEnd = state.contracts.filter(c => c.end_date).sort((a,b) => new Date(a.end_date) - new Date(b.end_date));
         if (contractsWithEnd.length > 0) {
             document.getElementById('kpi-next-contract-expiry').innerText = contractsWithEnd[0].end_date;
@@ -503,7 +513,7 @@
         }
     }
 
-    // 1. LEIETAKERE (OPPRETT / REDIGER)
+    // 1. LEIETAKERE
     function openTenantModal(tenantId = null) {
         document.getElementById('editTenantId').value = tenantId || '';
         document.getElementById('tenantModalTitle').innerText = tenantId ? 'Rediger Leietaker' : 'Registrer Ny Leietaker';
@@ -601,7 +611,7 @@
         });
     }
 
-    // 2. KONTRAKTER (OPPRETT / REDIGER)
+    // 2. KONTRAKTER (KORREKT LAGRING HÅNDTERT)
     function openContractModal(contractId = null) {
         populateTenantDropdowns('inputContractTenant');
         document.getElementById('editContractId').value = contractId || '';
@@ -630,19 +640,35 @@
     async function handleSaveContract(e) {
         e.preventDefault();
         const id = document.getElementById('editContractId').value;
+        const tenantIdVal = parseInt(document.getElementById('inputContractTenant').value);
+
+        if (!tenantIdVal) {
+            alert('Vennligst velg en leietaker.');
+            return;
+        }
+
+        const tenant = state.tenants.find(t => t.id === tenantIdVal);
+
         const contractObj = {
-            tenant_id: parseInt(document.getElementById('inputContractTenant').value),
+            tenant_id: tenantIdVal,
             start_date: document.getElementById('inputContractStart').value,
             end_date: document.getElementById('inputContractEnd').value || null,
+            rent_amount: tenant ? tenant.rent : 0,
             deposit_amount: parseFloat(document.getElementById('inputContractDeposit').value) || 0,
             pdf_url: document.getElementById('inputContractPdf').value || null,
             special_terms: document.getElementById('inputContractTerms').value || null
         };
 
+        let result;
         if (id) {
-            await dbClient.from('contracts').update(contractObj).eq('id', parseInt(id));
+            result = await dbClient.from('contracts').update(contractObj).eq('id', parseInt(id));
         } else {
-            await dbClient.from('contracts').insert([contractObj]);
+            result = await dbClient.from('contracts').insert([contractObj]);
+        }
+
+        if (result.error) {
+            alert('Feil ved lagring av kontrakt: ' + result.error.message);
+            return;
         }
 
         closeModal('contractModal');
@@ -679,7 +705,7 @@
         });
     }
 
-    // 3. LEIEINNBETALINGER (BEHANDLE / REDIGER)
+    // 3. LEIEINNBETALINGER (MED SLETT RAD)
     function openPaymentModal(paymentId = null) {
         populateTenantDropdowns('inputPayTenant');
         document.getElementById('editPaymentId').value = paymentId || '';
@@ -729,6 +755,17 @@
         loadDataFromSupabase();
     }
 
+    async function handleDeletePayment() {
+        const id = document.getElementById('editPaymentId').value;
+        if (!id) return;
+        if (confirm('Er du sikker på at du vil slette denne betalingslinjen?')) {
+            await dbClient.from('payments').delete().eq('id', parseInt(id));
+            closeModal('paymentModal');
+            showToast('Betalingslinje slettet.');
+            loadDataFromSupabase();
+        }
+    }
+
     function renderPayments() {
         const table = document.getElementById('paymentsTableBody');
         if (!table) return;
@@ -761,7 +798,7 @@
         });
     }
 
-    // 4. INSPEKSJONER (OPPRETT / REDIGER)
+    // 4. INSPEKSJONER (10 ÅR)
     function openInspectionModal(inspectionId = null) {
         populateTenantDropdowns('inputInspectionTenant');
         document.getElementById('editInspectionId').value = inspectionId || '';
@@ -770,7 +807,7 @@
         if (inspectionId) {
             const insp = state.inspections.find(x => x.id === inspectionId);
             if (insp) {
-                document.getElementById('inputInspectionTenant').value = insp.tenant_id;
+                document.getElementById('inputInspectionTenant').value = insp.tenant_id || '';
                 document.getElementById('inputInspectionDate').value = insp.date || '';
                 document.getElementById('inputInspectionFireAlarm').checked = insp.fire_alarm_ok || false;
                 document.getElementById('inputInspectionImages').value = insp.images_url || '';
@@ -788,12 +825,15 @@
     async function handleSaveInspection(e) {
         e.preventDefault();
         const id = document.getElementById('editInspectionId').value;
+        const tenantVal = document.getElementById('inputInspectionTenant').value;
+
         const inspObj = {
-            tenant_id: parseInt(document.getElementById('inputInspectionTenant').value),
+            tenant_id: tenantVal ? parseInt(tenantVal) : null,
             date: document.getElementById('inputInspectionDate').value,
             fire_alarm_ok: document.getElementById('inputInspectionFireAlarm').checked,
             images_url: document.getElementById('inputInspectionImages').value || null,
-            comments: document.getElementById('inputInspectionComments').value
+            comments: document.getElementById('inputInspectionComments').value,
+            deviation: 'Gjennomført'
         };
 
         if (id) {
@@ -813,25 +853,28 @@
         container.innerHTML = '';
 
         if (state.inspections.length === 0) {
-            container.innerHTML = '<p class="text-slate-400 text-center py-4">Ingen gjennomførte inspeksjoner ennå.</p>';
+            container.innerHTML = '<p class="text-slate-400 text-center py-4">Ingen inspeksjoner i databasen.</p>';
             return;
         }
 
+        const today = new Date().toISOString().split('T')[0];
+
         state.inspections.forEach(insp => {
             const tenant = state.tenants.find(t => t.id === insp.tenant_id);
+            const isFuture = insp.date >= today;
+
             const div = document.createElement('div');
-            div.className = "p-4 bg-slate-900 border border-slate-700 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4";
+            div.className = `p-4 bg-slate-900 border ${isFuture ? 'border-purple-500/40' : 'border-slate-700'} rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4`;
             div.innerHTML = `
                 <div>
                     <div class="flex items-center gap-2">
                         <span class="font-bold text-white">${insp.date}</span>
-                        <span class="text-xs text-slate-400">• ${tenant ? tenant.name : 'Ukjent'}</span>
-                        <span class="text-xs px-2 py-0.5 rounded ${insp.fire_alarm_ok ? 'bg-emerald-500/20 text-emerald-300' : 'bg-rose-500/20 text-rose-300'}">
-                            <i class="fa-solid fa-fire-extinguisher"></i> Brannvarsler: ${insp.fire_alarm_ok ? 'OK' : 'IKKE SJEKKET'}
+                        <span class="text-xs text-slate-400">• ${tenant ? tenant.name : 'Alle eiendommer'}</span>
+                        <span class="text-xs px-2 py-0.5 rounded ${isFuture ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'bg-emerald-500/20 text-emerald-300'}">
+                            ${isFuture ? 'Kommende Planlagt' : 'Gjennomført'}
                         </span>
                     </div>
-                    <p class="text-sm text-slate-300 mt-2">${insp.comments || 'Ingen kommentar'}</p>
-                    ${insp.images_url ? `<a href="${insp.images_url}" target="_blank" class="text-xs text-purple-400 hover:underline mt-1 inline-block"><i class="fa-solid fa-image"></i> Vis Bilde</a>` : ''}
+                    <p class="text-sm text-slate-300 mt-1">${insp.comments || 'Fastlagt kvartalsvis inspeksjon (17:00 - 17:30)'}</p>
                 </div>
                 <button onclick="openInspectionModal(${insp.id})" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-lg transition shrink-0"><i class="fa-solid fa-pen-to-square"></i> Rediger</button>
             `;
@@ -842,7 +885,7 @@
     function populateTenantDropdowns(selectId) {
         const sel = document.getElementById(selectId);
         if (!sel) return;
-        sel.innerHTML = '';
+        sel.innerHTML = '<option value="">-- Velg Leietaker --</option>';
         state.tenants.forEach(t => {
             sel.innerHTML += `<option value="${t.id}">${t.name}</option>`;
         });
