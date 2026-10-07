@@ -32,8 +32,8 @@
         </button>
     </div>
 
-    <!-- Sidebar Navigation -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out z-40 w-64 bg-slate-800 border-r border-slate-700 flex flex-col justify-between shrink-0">
+    <!-- Sidebar Navigation (Fikset mobilvisning med scroll) -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out z-50 w-64 bg-slate-800 border-r border-slate-700 flex flex-col justify-between shrink-0 overflow-y-auto">
         <div>
             <div class="p-5 border-b border-slate-700 hidden md:flex items-center space-x-3">
                 <i class="fa-solid fa-building-user text-emerald-500 text-2xl"></i>
@@ -51,6 +51,9 @@
                 </a>
                 <a href="#" onclick="switchTab('payments')" id="nav-payments" class="nav-item flex items-center px-4 py-2.5 text-slate-300 hover:bg-slate-700/40 rounded-xl transition font-medium text-sm">
                     <i class="fa-solid fa-money-bill-wave w-6 text-base"></i><span>Innbetalinger</span>
+                </a>
+                <a href="#" onclick="switchTab('issues')" id="nav-issues" class="nav-item flex items-center px-4 py-2.5 text-slate-300 hover:bg-slate-700/40 rounded-xl transition font-medium text-sm">
+                    <i class="fa-solid fa-triangle-exclamation w-6 text-base"></i><span>Klager og Avvik</span>
                 </a>
                 <a href="#" onclick="switchTab('inspections')" id="nav-inspections" class="nav-item flex items-center px-4 py-2.5 text-slate-300 hover:bg-slate-700/40 rounded-xl transition font-medium text-sm">
                     <i class="fa-solid fa-clipboard-check w-6 text-base"></i><span>Inspeksjoner</span>
@@ -79,12 +82,13 @@
                     <h1 class="text-2xl md:text-3xl font-bold text-white">Utleier Dashbord</h1>
                     <p class="text-slate-400 text-sm">Oversikt og status for dine leieforhold</p>
                 </div>
-                <button onclick="openTenantModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-medium transition flex items-center gap-2 shadow-lg">
-                    <i class="fa-solid fa-plus"></i> Ny Leietaker
+                <!-- Knapp endret til Registrer Innbetaling -->
+                <button onclick="openPaymentModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-medium transition flex items-center gap-2 shadow-lg">
+                    <i class="fa-solid fa-money-check-dollar"></i> Registrer Innbetaling
                 </button>
             </div>
 
-            <!-- KPI Cards med Ikoner -->
+            <!-- KPI Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 relative overflow-hidden">
                     <div class="flex items-center justify-between">
@@ -98,12 +102,12 @@
 
                 <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 relative overflow-hidden">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Neste Husleie Forfall</span>
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Neste Husleie forfall</span>
                         <div class="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center">
                             <i class="fa-solid fa-calendar-day text-lg"></i>
                         </div>
                     </div>
-                    <div class="mt-2 text-lg font-bold text-blue-400" id="kpi-next-payment-due">-</div>
+                    <div class="mt-2 text-lg font-bold text-blue-400" id="kpi-next-payment-due">Laster...</div>
                 </div>
 
                 <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 relative overflow-hidden">
@@ -159,6 +163,7 @@
                     <thead class="bg-slate-900/80 text-xs uppercase text-slate-400">
                         <tr>
                             <th class="p-4">Leietaker</th>
+                            <th class="p-4">Forfallsdag</th>
                             <th class="p-4">Startdato</th>
                             <th class="p-4">Utløpsdato</th>
                             <th class="p-4">Depositum</th>
@@ -197,7 +202,20 @@
             </div>
         </section>
 
-        <!-- TAB 8: INSPEKSJONER -->
+        <!-- TAB 5: KLAGER OG AVVIK -->
+        <section id="tab-issues" class="space-y-6 hidden">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-white">Klager og Avvik</h1>
+                <button onclick="openNewIssueModal()" class="bg-rose-600 hover:bg-rose-500 text-white px-4 py-2 rounded-xl text-sm font-medium">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Registrer Klage
+                </button>
+            </div>
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
+                <div id="issuesListContainer" class="space-y-3"></div>
+            </div>
+        </section>
+
+        <!-- TAB 6: INSPEKSJONER -->
         <section id="tab-inspections" class="space-y-6 hidden">
             <div class="flex justify-between items-center">
                 <h1 class="text-2xl font-bold text-white">Inspeksjoner (10 Års Plan)</h1>
@@ -286,17 +304,23 @@
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Forfallsdag i mnd (1–31) *</label>
+                        <input type="number" id="inputContractDueDay" min="1" max="31" value="1" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
+                    </div>
+                    <div>
                         <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Startdato *</label>
                         <input type="date" id="inputContractStart" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
                     </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Utløpsdato</label>
                         <input type="date" id="inputContractEnd" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
                     </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Depositum (NOK)</label>
-                    <input type="number" id="inputContractDeposit" value="31500" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Depositum (NOK)</label>
+                        <input type="number" id="inputContractDeposit" value="31500" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
+                    </div>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">PDF Lenke / Webadresse</label>
@@ -356,6 +380,72 @@
                         <button type="button" onclick="closeModal('paymentModal')" class="px-4 py-2 bg-slate-700 text-slate-300 rounded-xl text-sm">Avbryt</button>
                         <button type="submit" class="px-5 py-2 bg-emerald-600 text-white rounded-xl text-sm hover:bg-emerald-500">Lagre</button>
                     </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: REGISTRER / REDIGER KLAGE -->
+    <div id="issueModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-800 border border-slate-700 w-full max-w-xl rounded-2xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-3">
+                <h3 class="text-lg font-bold text-white" id="issueModalTitle"><i class="fa-solid fa-triangle-exclamation text-rose-400 mr-2"></i> Registrer Klage / Avvik</h3>
+                <button onclick="closeModal('issueModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="issueForm" onsubmit="handleSaveIssue(event)" class="space-y-4">
+                <input type="hidden" id="issueId">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Klagen gjelder mot *</label>
+                        <select id="issueTargetParty" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
+                            <option value="Leietaker">Leietaker</option>
+                            <option value="Utleier">Utleier</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Relatert Leietaker (valgfri)</label>
+                        <select id="issueTenantId" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none"></select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Alvorlighetsgrad *</label>
+                        <select id="issueSeverity" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
+                            <option value="Lav">Lav</option>
+                            <option value="Middels">Middels</option>
+                            <option value="Høy">Høy</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Klagetype / Kategori *</label>
+                        <input type="text" id="issueCategory" placeholder="f.eks. Støy, Renhold, Skader, Husleie" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Dato *</label>
+                        <input type="date" id="issueDate" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Status *</label>
+                        <select id="issueStatus" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
+                            <option value="Åpen">Åpen</option>
+                            <option value="Under behandling">Under behandling</option>
+                            <option value="Lukket">Lukket</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Hva gjelder klagen (Beskrivelse) *</label>
+                    <textarea id="issueDescription" rows="3" required placeholder="Beskriv hendelsen eller klagen i detalj..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Tiltak / Oppfølging</label>
+                    <textarea id="issueAction" rows="2" placeholder="Beskriv planlagte eller utførte tiltak..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none"></textarea>
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-3 border-t border-slate-700">
+                    <button type="button" onclick="closeModal('issueModal')" class="px-4 py-2 bg-slate-700 text-slate-300 rounded-xl text-sm font-medium">Avbryt</button>
+                    <button type="submit" class="px-5 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-sm font-medium">Lagre Klage</button>
                 </div>
             </form>
         </div>
@@ -437,7 +527,7 @@
         dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     }
 
-    const state = { tenants: [], contracts: [], payments: [], inspections: [] };
+    const state = { tenants: [], contracts: [], payments: [], inspections: [], issues: [] };
 
     async function loadDataFromSupabase() {
         if (!dbClient) return;
@@ -453,6 +543,9 @@
 
             const { data: inspections } = await dbClient.from('inspections').select('*').order('date', { ascending: true });
             state.inspections = inspections || [];
+
+            const { data: issues } = await dbClient.from('issues').select('*').order('date', { ascending: false });
+            state.issues = issues || [];
 
             await checkAndGenerateMonthlyPayments();
             renderAll();
@@ -487,14 +580,48 @@
         renderContracts();
         renderPayments();
         renderInspections();
+        renderIssues();
         renderDashboardKPIs();
         initChart();
+    }
+
+    // DYNAMISK BEGREGNING AV NESTE HUSLEIEFORFALL
+    function calculateNextDueDate() {
+        const today = new Date();
+        let dueDay = 1;
+
+        if (state.contracts && state.contracts.length > 0) {
+            const days = state.contracts.map(c => c.payment_due_day || 1);
+            dueDay = Math.min(...days);
+        }
+
+        let targetMonth = today.getMonth();
+        let targetYear = today.getFullYear();
+
+        if (today.getDate() > dueDay) {
+            targetMonth++;
+            if (targetMonth > 11) {
+                targetMonth = 0;
+                targetYear++;
+            }
+        }
+
+        const dueDateObj = new Date(targetYear, targetMonth, dueDay);
+        const dayStr = String(dueDateObj.getDate()).padStart(2, '0');
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Des"];
+        const monthStr = monthNames[dueDateObj.getMonth()];
+        
+        const elem = document.getElementById('kpi-next-payment-due');
+        if (elem) {
+            elem.innerText = `${dayStr}. ${monthStr} ${targetYear}`;
+        }
     }
 
     function renderDashboardKPIs() {
         const activeTenants = state.tenants.filter(t => t.status === 'Aktiv');
         document.getElementById('kpi-active-tenants').innerText = activeTenants.length;
-        document.getElementById('kpi-next-payment-due').innerText = '1. i neste mnd';
+        
+        calculateNextDueDate();
 
         // Neste Inspeksjon fra databasen
         const today = new Date().toISOString().split('T')[0];
@@ -611,7 +738,7 @@
         });
     }
 
-    // 2. KONTRAKTER (KORREKT LAGRING HÅNDTERT)
+    // 2. KONTRAKTER
     function openContractModal(contractId = null) {
         populateTenantDropdowns('inputContractTenant');
         document.getElementById('editContractId').value = contractId || '';
@@ -621,6 +748,7 @@
             const c = state.contracts.find(x => x.id === contractId);
             if (c) {
                 document.getElementById('inputContractTenant').value = c.tenant_id;
+                document.getElementById('inputContractDueDay').value = c.payment_due_day || 1;
                 document.getElementById('inputContractStart').value = c.start_date || '';
                 document.getElementById('inputContractEnd').value = c.end_date || '';
                 document.getElementById('inputContractDeposit').value = c.deposit_amount || 0;
@@ -628,6 +756,7 @@
                 document.getElementById('inputContractTerms').value = c.special_terms || '';
             }
         } else {
+            document.getElementById('inputContractDueDay').value = 1;
             document.getElementById('inputContractStart').value = '';
             document.getElementById('inputContractEnd').value = '';
             document.getElementById('inputContractDeposit').value = 31500;
@@ -651,6 +780,7 @@
 
         const contractObj = {
             tenant_id: tenantIdVal,
+            payment_due_day: parseInt(document.getElementById('inputContractDueDay').value) || 1,
             start_date: document.getElementById('inputContractStart').value,
             end_date: document.getElementById('inputContractEnd').value || null,
             rent_amount: tenant ? tenant.rent : 0,
@@ -682,7 +812,7 @@
         table.innerHTML = '';
 
         if (state.contracts.length === 0) {
-            table.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-400">Ingen kontrakter registrert.</td></tr>';
+            table.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-slate-400">Ingen kontrakter registrert.</td></tr>';
             return;
         }
 
@@ -691,6 +821,7 @@
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td class="p-4 font-semibold text-white">${tenant ? tenant.name : 'Ukjent'}</td>
+                <td class="p-4 font-semibold text-emerald-400">Den ${contract.payment_due_day || 1}. i mnd</td>
                 <td class="p-4">${contract.start_date || '-'}</td>
                 <td class="p-4">${contract.end_date || 'Tidsubestemt'}</td>
                 <td class="p-4 font-semibold text-white">${(contract.deposit_amount || 0).toLocaleString()} kr</td>
@@ -705,7 +836,7 @@
         });
     }
 
-    // 3. LEIEINNBETALINGER (MED SLETT RAD)
+    // 3. LEIEINNBETALINGER
     function openPaymentModal(paymentId = null) {
         populateTenantDropdowns('inputPayTenant');
         document.getElementById('editPaymentId').value = paymentId || '';
@@ -798,7 +929,140 @@
         });
     }
 
-    // 4. INSPEKSJONER (10 ÅR)
+    // 4. KLAGER OG AVVIK (MODUL)
+    function renderIssues() {
+        const container = document.getElementById('issuesListContainer');
+        if (!container) return;
+        container.innerHTML = '';
+
+        if (!state.issues || state.issues.length === 0) {
+            container.innerHTML = '<p class="text-slate-400 text-center py-4">Ingen registrerte avvik eller klager.</p>';
+            return;
+        }
+
+        state.issues.forEach(issue => {
+            const tenant = state.tenants.find(t => t.id === issue.tenant_id);
+            const div = document.createElement('div');
+            div.className = "p-4 bg-slate-900/60 border border-slate-700 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4";
+            
+            let statusBadge = 'bg-amber-500/20 text-amber-300 border-amber-500/30';
+            if (issue.status === 'Lukket') statusBadge = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
+            if (issue.status === 'Åpen') statusBadge = 'bg-rose-500/20 text-rose-300 border-rose-500/30';
+
+            div.innerHTML = `
+                <div class="space-y-1 flex-1">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700 font-bold">Klagemot: ${issue.target_party || 'Leietaker'}</span>
+                        <span class="text-xs px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 font-bold">${issue.severity || 'Middels'} Alvorlighet</span>
+                        <span class="text-xs font-semibold text-slate-400">${issue.category || 'Generelt'}</span>
+                        <span class="text-xs px-2 py-0.5 rounded border ${statusBadge} font-semibold">${issue.status || 'Åpen'}</span>
+                        <span class="text-xs text-slate-500">• ${issue.date || ''}</span>
+                    </div>
+                    <h4 class="font-bold text-white mt-2">${issue.description || ''}</h4>
+                    <p class="text-xs text-slate-400"><strong class="text-slate-300">Relatert til:</strong> ${tenant ? tenant.name : 'Ingen spesifisert'}</p>
+                    <p class="text-xs text-emerald-400"><strong class="text-slate-300">Tiltak:</strong> ${issue.action || 'Ingen tiltak registrert enda'}</p>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                    <button onclick="openEditIssueModal(${issue.id})" class="text-xs bg-slate-700 hover:bg-slate-600 text-slate-200 px-3 py-1.5 rounded-lg transition flex items-center gap-1">
+                        <i class="fa-solid fa-pen"></i> Rediger
+                    </button>
+                    ${issue.status !== 'Lukket' ? `
+                        <button onclick="closeIssue(${issue.id})" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg transition flex items-center gap-1">
+                            <i class="fa-solid fa-check"></i> Lukk Klage
+                        </button>
+                    ` : ''}
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function openNewIssueModal() {
+        document.getElementById('issueId').value = '';
+        document.getElementById('issueModalTitle').innerText = 'Registrer Ny Klage / Avvik';
+        document.getElementById('issueTargetParty').value = 'Leietaker';
+        document.getElementById('issueSeverity').value = 'Middels';
+        document.getElementById('issueCategory').value = '';
+        document.getElementById('issueDate').value = new Date().toISOString().split('T')[0];
+        document.getElementById('issueStatus').value = 'Åpen';
+        document.getElementById('issueDescription').value = '';
+        document.getElementById('issueAction').value = '';
+        
+        populateTenantDropdowns('issueTenantId');
+        openModal('issueModal');
+    }
+
+    function openEditIssueModal(id) {
+        const issue = state.issues.find(i => i.id === id);
+        if (!issue) return;
+
+        document.getElementById('issueId').value = issue.id;
+        document.getElementById('issueModalTitle').innerText = 'Rediger Klage / Avvik';
+        document.getElementById('issueTargetParty').value = issue.target_party || 'Leietaker';
+        document.getElementById('issueSeverity').value = issue.severity || 'Middels';
+        document.getElementById('issueCategory').value = issue.category || '';
+        document.getElementById('issueDate').value = issue.date || '';
+        document.getElementById('issueStatus').value = issue.status || 'Åpen';
+        document.getElementById('issueDescription').value = issue.description || '';
+        document.getElementById('issueAction').value = issue.action || '';
+
+        populateTenantDropdowns('issueTenantId');
+        if (issue.tenant_id) {
+            document.getElementById('issueTenantId').value = issue.tenant_id;
+        }
+
+        openModal('issueModal');
+    }
+
+    async function handleSaveIssue(e) {
+        e.preventDefault();
+        const id = document.getElementById('issueId').value;
+        const tenantVal = document.getElementById('issueTenantId').value;
+
+        const issueData = {
+            target_party: document.getElementById('issueTargetParty').value,
+            tenant_id: tenantVal ? parseInt(tenantVal) : null,
+            severity: document.getElementById('issueSeverity').value,
+            category: document.getElementById('issueCategory').value,
+            date: document.getElementById('issueDate').value,
+            status: document.getElementById('issueStatus').value,
+            description: document.getElementById('issueDescription').value,
+            action: document.getElementById('issueAction').value
+        };
+
+        let result;
+        if (id) {
+            result = await dbClient.from('issues').update(issueData).eq('id', parseInt(id));
+        } else {
+            result = await dbClient.from('issues').insert([issueData]);
+        }
+
+        if (result.error) {
+            alert('Feil ved lagring av klage: ' + result.error.message);
+            return;
+        }
+
+        closeModal('issueModal');
+        showToast(id ? 'Klage oppdatert!' : 'Ny klage registrert!');
+        loadDataFromSupabase();
+    }
+
+    async function closeIssue(id) {
+        const { error } = await dbClient
+            .from('issues')
+            .update({ status: 'Lukket' })
+            .eq('id', parseInt(id));
+
+        if (error) {
+            alert('Feil ved lukking av klage: ' + error.message);
+            return;
+        }
+
+        showToast('Klagen er nå lukket.');
+        loadDataFromSupabase();
+    }
+
+    // 5. INSPEKSJONER (10 ÅR)
     function openInspectionModal(inspectionId = null) {
         populateTenantDropdowns('inputInspectionTenant');
         document.getElementById('editInspectionId').value = inspectionId || '';
@@ -885,7 +1149,7 @@
     function populateTenantDropdowns(selectId) {
         const sel = document.getElementById(selectId);
         if (!sel) return;
-        sel.innerHTML = '<option value="">-- Velg Leietaker --</option>';
+        sel.innerHTML = '<option value="">-- Velg Leietaker (valgfri) --</option>';
         state.tenants.forEach(t => {
             sel.innerHTML += `<option value="${t.id}">${t.name}</option>`;
         });
