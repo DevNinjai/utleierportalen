@@ -4,7 +4,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Utleier Pro - Dashbord</title>
+    <title>Utleierportalen</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -28,7 +28,7 @@
                 <div class="w-16 h-16 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center mx-auto text-3xl">
                     <i class="fa-solid fa-building-user"></i>
                 </div>
-                <h2 class="text-2xl font-bold text-white">Utleier Pro</h2>
+                <h2 class="text-2xl font-bold text-white">Utleierportalen</h2>
                 <p class="text-slate-400 text-sm">Logg inn for å administrere dine leieforhold</p>
             </div>
             <form onsubmit="handleLogin(event)" class="space-y-4">
@@ -51,7 +51,7 @@
     <div id="appHeaderMobile" class="md:hidden flex items-center justify-between p-4 bg-slate-800 border-b border-slate-700 sticky top-0 z-50">
         <div class="flex items-center space-x-3">
             <i class="fa-solid fa-building-user text-emerald-500 text-2xl"></i>
-            <span class="font-bold text-lg text-white">Utleier Pro</span>
+            <span class="font-bold text-lg text-white">Utleierportalen</span>
         </div>
         <button onclick="toggleMobileSidebar()" class="text-slate-300 hover:text-white focus:outline-none text-xl p-2">
             <i class="fa-solid fa-bars"></i>
@@ -63,7 +63,7 @@
         <div>
             <div class="p-5 border-b border-slate-700 hidden md:flex items-center space-x-3">
                 <i class="fa-solid fa-building-user text-emerald-500 text-2xl"></i>
-                <span class="font-bold text-xl text-white tracking-wide">Utleier Pro</span>
+                <span class="font-bold text-xl text-white tracking-wide">Utleierportalen</span>
             </div>
             <nav class="mt-4 px-3 space-y-1">
                 <a href="#" onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item flex items-center px-4 py-2.5 text-emerald-400 bg-slate-700/60 rounded-xl transition font-medium text-sm">
@@ -1331,28 +1331,56 @@
         if (sidebar) sidebar.classList.toggle('-translate-x-full');
     }
 
-    function showToast(msg) {
-        const container = document.getElementById('toastContainer');
-        if (!container) return;
-        const toast = document.createElement('div');
-        toast.className = "bg-emerald-600 text-white px-4 py-3 rounded-xl shadow-xl text-sm font-medium";
-        toast.innerHTML = `<i class="fa-solid fa-circle-check mr-2"></i> ${msg}`;
-        container.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
+    function initChart() {
+    const ctxEl = document.getElementById('revenueChart');
+    if (!ctxEl || !window.Chart) return;
+
+    // Beregn innbetalt leie per måned (0 = Jan, 11 = Des) for 2026
+    const monthlyTotals = new Array(12).fill(0);
+
+    state.payments.forEach(pay => {
+        if (pay.status === 'Betalt') {
+            // Sjekk enten mottaksdato eller forfallsdato
+            const dateStr = pay.received_date || pay.due_date;
+            if (dateStr) {
+                const dateObj = new Date(dateStr);
+                const monthIndex = dateObj.getMonth(); // 0 = Jan, 9 = Okt, osv.
+                const amount = parseFloat(pay.amount) || 0;
+                
+                if (monthIndex >= 0 && monthIndex < 12) {
+                    monthlyTotals[monthIndex] += amount;
+                }
+            }
+        }
+    });
+
+    if (revenueChartInstance) {
+        revenueChartInstance.destroy();
     }
 
-    function initChart() {
-        const ctxEl = document.getElementById('revenueChart');
-        if (!ctxEl) return;
-        new Chart(ctxEl.getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des'],
-                datasets: [{ label: 'Innbetalt Leie (kr)', data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], backgroundColor: '#22c55e', borderRadius: 6 }]
-            },
-            options: { responsive: true, maintainAspectRatio: false }
-        });
-    }
+    revenueChartInstance = new Chart(ctxEl.getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des'],
+            datasets: [
+                {
+                    label: 'Innbetalt Leie (kr)',
+                    data: monthlyTotals,
+                    backgroundColor: '#22c55e',
+                    borderRadius: 6
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
+                y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(51, 65, 85, 0.4)' } }
+            }
+        }
+    });
+}
 
     window.onload = function() {
         checkAuthStatus();
