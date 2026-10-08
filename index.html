@@ -216,21 +216,32 @@
                     <i class="fa-solid fa-plus"></i> Registrer Innbetaling
                 </button>
             </div>
-            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 overflow-x-auto">
-                <table class="w-full text-left text-sm text-slate-300">
-                    <thead class="bg-slate-900/80 text-xs uppercase text-slate-400">
-                        <tr>
-                            <th class="p-4">Måned</th>
-                            <th class="p-4">Leietaker</th>
-                            <th class="p-4">Mottatt Dato</th>
-                            <th class="p-4">Beløp</th>
-                            <th class="p-4">Status</th>
-                            <th class="p-4">Kommentar</th>
-                            <th class="p-4 text-right">Handling</th>
-                        </tr>
-                    </thead>
-                    <tbody id="paymentsTableBody" class="divide-y divide-slate-700"></tbody>
-                </table>
+
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
+                <!-- MOBILVISNING (Kortvisning - kun synlig på mobil) -->
+                <div class="block md:hidden divide-y divide-slate-700/60" id="paymentsMobileList">
+                    <!-- Fylles dynamisk fra JavaScript -->
+                </div>
+
+                <!-- DESKTOPVISNING (Tabell - skjult på mobil) -->
+                <div class="hidden md:block overflow-x-auto p-4">
+                    <table class="w-full text-left text-sm text-slate-300">
+                        <thead class="bg-slate-900/80 text-xs uppercase text-slate-400 border-b border-slate-700">
+                            <tr>
+                                <th class="p-4">Måned</th>
+                                <th class="p-4">Leietaker</th>
+                                <th class="p-4">Mottatt Dato</th>
+                                <th class="p-4">Beløp</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4">Kommentar</th>
+                                <th class="p-4 text-right">Handling</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paymentsTableBody" class="divide-y divide-slate-700">
+                            <!-- Fylles dynamisk fra JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
 
@@ -948,7 +959,7 @@
         });
     }
 
-    // LEIEINNBETALINGER
+    // LEIEINNBETALINGER (Med responsiv visning: Tabell for PC / Kort for Mobil)
     function openPaymentModal(paymentId = null) {
         populateActiveTenantDropdown('inputPayTenant');
         document.getElementById('editPaymentId').value = paymentId || '';
@@ -1011,28 +1022,68 @@
 
     function renderPayments() {
         const table = document.getElementById('paymentsTableBody');
-        if (!table) return;
-        table.innerHTML = '';
+        const mobileList = document.getElementById('paymentsMobileList');
+        
+        if (table) table.innerHTML = '';
+        if (mobileList) mobileList.innerHTML = '';
 
         state.payments.forEach(pay => {
             const tenant = state.tenants.find(t => t.id === pay.tenant_id);
             let statusColor = 'text-amber-400';
-            if (pay.status === 'Betalt') statusColor = 'text-emerald-400';
-            if (pay.status === 'Forsinket') statusColor = 'text-rose-400';
+            let badgeColor = 'bg-amber-500/20 text-amber-300 border-amber-500/30';
+            
+            if (pay.status === 'Betalt') {
+                statusColor = 'text-emerald-400';
+                badgeColor = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
+            } else if (pay.status === 'Forsinket') {
+                statusColor = 'text-rose-400';
+                badgeColor = 'bg-rose-500/20 text-rose-300 border-rose-500/30';
+            }
 
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td class="p-4 font-semibold text-white">${pay.period || '-'}</td>
-                <td class="p-4">${tenant ? tenant.name : 'Ukjent'}</td>
-                <td class="p-4">${pay.received_date || '-'}</td>
-                <td class="p-4 font-semibold text-white">${(pay.amount || 0).toLocaleString()} kr</td>
-                <td class="p-4 font-semibold ${statusColor}">${pay.status || 'Til behandling'}</td>
-                <td class="p-4 text-xs text-slate-400">${pay.comment || '-'}</td>
-                <td class="p-4 text-right">
-                    <button onclick="openPaymentModal(${pay.id})" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg transition"><i class="fa-solid fa-pen-to-square"></i> Behandle</button>
-                </td>
-            `;
-            table.appendChild(tr);
+            // 1. DESKTOP TABELLRAD
+            if (table) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="p-4 font-semibold text-white">${pay.period || '-'}</td>
+                    <td class="p-4">${tenant ? tenant.name : 'Ukjent'}</td>
+                    <td class="p-4">${pay.received_date || '-'}</td>
+                    <td class="p-4 font-semibold text-white">${(pay.amount || 0).toLocaleString()} kr</td>
+                    <td class="p-4 font-semibold ${statusColor}">${pay.status || 'Til behandling'}</td>
+                    <td class="p-4 text-xs text-slate-400">${pay.comment || '-'}</td>
+                    <td class="p-4 text-right">
+                        <button onclick="openPaymentModal(${pay.id})" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg transition"><i class="fa-solid fa-pen-to-square"></i> Behandle</button>
+                    </td>
+                `;
+                table.appendChild(tr);
+            }
+
+            // 2. MOBIL KORT
+            if (mobileList) {
+                const card = document.createElement('div');
+                card.className = "p-4 space-y-3";
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="font-bold text-white text-base">${tenant ? tenant.name : 'Ukjent'}</div>
+                            <div class="text-xs text-slate-400">Periode: ${pay.period || '-'}</div>
+                        </div>
+                        <span class="px-2.5 py-1 text-xs rounded-full border ${badgeColor} font-medium">
+                            ${pay.status || 'Til behandling'}
+                        </span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm pt-1">
+                        <span class="font-semibold text-white text-lg">${(pay.amount || 0).toLocaleString()} kr</span>
+                        <span class="text-xs text-slate-400">Mottatt: ${pay.received_date || '-'}</span>
+                    </div>
+                    ${pay.comment ? `<p class="text-xs text-slate-400 bg-slate-900/40 p-2 rounded-lg">${pay.comment}</p>` : ''}
+                    <div class="pt-2 flex justify-end">
+                        <button onclick="openPaymentModal(${pay.id})" class="w-full text-center text-xs bg-emerald-600 hover:bg-emerald-500 text-white py-2 rounded-lg transition font-medium flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-pen-to-square"></i> Behandle Innbetaling
+                        </button>
+                    </div>
+                `;
+                mobileList.appendChild(card);
+            }
         });
     }
 
