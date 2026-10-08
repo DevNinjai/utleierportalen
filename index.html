@@ -584,14 +584,25 @@
 
     <script>
     const SUPABASE_URL = 'https://etuhkmoekcseewixotky.supabase.co'; 
-    const SUPABASE_ANON_KEY = 'sb_publishable_qFKWpV-h1B4oXuHT1OfvPA_YmKEyHYD';
-    
-    let dbClient = null;
-    if (window.supabase && typeof window.supabase.createClient === 'function') {
-        dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    }
+const SUPABASE_ANON_KEY = 'sb_publishable_qFKWpV-h1B4oXuHT1OfvPA_YmKEyHYD';
 
-    const state = { tenants: [], contracts: [], payments: [], inspections: [], issues: [] };
+let dbClient = null;
+if (window.supabase && typeof window.supabase.createClient === 'function') {
+    dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+
+const state = { tenants: [], contracts: [], payments: [], inspections: [], issues: [] };
+let revenueChartInstance = null; // <-- DEKLARERT HER NÅ
+
+function showToast(msg) { // <-- LAGT TILBAKE HER
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = "bg-emerald-600 text-white px-4 py-3 rounded-xl shadow-xl text-sm font-medium";
+    toast.innerHTML = `<i class="fa-solid fa-circle-check mr-2"></i> ${msg}`;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
 
     // SJEKK INNLOGGING
     async function checkAuthStatus() {
