@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="no" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lund Larsen</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Ikoner -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="max-w-md w-full bg-slate-800 border border-slate-700 rounded-3xl p-8 shadow-2xl text-center space-y-8">
+        
+        <!-- Overskrift -->
+        <div class="space-y-2">
+            <h1 class="text-3xl font-bold text-white tracking-wide">Lund Larsen</h1>
+            <p class="text-slate-400 text-sm">Velg portalen du vil gå til</p>
+        </div>
+
+        <!-- Knapper -->
+        <div class="space-y-4">
+            
+            <!-- 1. Blå knapp: Utleierportalen -->
+            <a href="/utleierportalen/" 
+               class="flex items-center justify-center gap-3 w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-4 px-6 rounded-2xl transition duration-200 shadow-lg shadow-blue-900/30 text-lg">
+                <i class="fa-solid fa-building-user"></i>
+                <span>Utleierportalen</span>
+            </a>
+
+            <!-- 2. Grønn knapp: Budsy -->
+            <a href="/budsy/" 
+               class="flex items-center justify-center gap-3 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-4 px-6 rounded-2xl transition duration-200 shadow-lg shadow-emerald-900/30 text-lg">
+                <i class="fa-solid fa-gavel"></i>
+                <span>Budsy</span>
+            </a>
+
+        </div>
+
+        <div class="text-xs text-slate-500 pt-4 border-t border-slate-700/60">
+            &copy; lundlarsen.no
+        </div>
+
+    </div>
+
+</body>
+</html>
