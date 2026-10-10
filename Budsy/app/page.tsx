@@ -51,40 +51,7 @@ export default function Dashboard() {
 
   return (
     <div className="p-4 max-w-7xl mx-auto space-y-4">
-      {/* HEADER OG TOPPMENY */}
-      <header className="flex flex-col md:flex-row md:justify-between md:items-center gap-3 border-b border-slate-800 pb-3">
-        <div className="flex items-center gap-2">
-          <div className="bg-emerald-500 text-slate-950 p-2 rounded-lg font-black text-xl">B</div>
-          <div>
-            <h1 className="text-xl font-bold tracking-tight text-white">Budsy</h1>
-            <p className="text-xs text-slate-400">budsy.lundlarsen.no</p>
-          </div>
-        </div>
 
-        {/* MENYLENKER */}
-<nav className="flex items-center gap-1 bg-[#1e293b] p-1 rounded-lg border border-slate-800 text-xs font-medium">
-  <Link href="/" className="px-3 py-1.5 rounded-md text-slate-300 hover:text-white hover:bg-slate-800 transition-colors flex items-center gap-1">
-    <LayoutDashboard className="w-3.5 h-3.5" /> Dashboard
-  </Link>
-  <Link href="/incomes" className="px-3 py-1.5 rounded-md text-slate-300 hover:text-white hover:bg-slate-800 transition-colors flex items-center gap-1">
-    <Wallet className="w-3.5 h-3.5" /> Inntekter
-  </Link>
-  <Link href="/fixed-expenses" className="px-3 py-1.5 rounded-md text-slate-300 hover:text-white hover:bg-slate-800 transition-colors flex items-center gap-1">
-    <Receipt className="w-3.5 h-3.5" /> Regningspott
-  </Link>
-  <Link href="/savings" className="px-3 py-1.5 rounded-md text-slate-300 hover:text-white hover:bg-slate-800 transition-colors flex items-center gap-1">
-    <PiggyBank className="w-3.5 h-3.5" /> Sparing
-  </Link>
-  <Link href="/transactions" className="px-3 py-1.5 rounded-md text-slate-300 hover:text-white hover:bg-slate-800 transition-colors flex items-center gap-1">
-    <History className="w-3.5 h-3.5" /> Logg
-  </Link>
-</nav>
-
-        <div className="flex gap-2 text-xs">
-          <span className="px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 font-medium">Kenneth</span>
-          <span className="px-2.5 py-1 rounded-full bg-pink-500/20 text-pink-400 border border-pink-500/30 font-medium">Katarina</span>
-        </div>
-      </header>
 
       {/* HOVEDTALL / COCKPIT PANEL */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
