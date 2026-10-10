@@ -53,10 +53,20 @@ export default function Navbar() {
           })}
         </nav>
 
-        {/* BRUKERTAGGER (TIL HØYRE PÅ DESKTOP) */}
+{/* BRUKERTAGGER (KLIKKBARE LENKER) */}
         <div className="hidden md:flex items-center gap-1.5 text-xs">
-          <span className="px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 font-medium">Kenneth</span>
-          <span className="px-2.5 py-1 rounded-full bg-pink-500/10 text-pink-400 border border-pink-500/20 font-medium">Katarina</span>
+          <Link
+            href="/user/Kenneth"
+            className="px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 font-medium hover:bg-blue-500/20 transition-colors"
+          >
+            Kenneth
+          </Link>
+          <Link
+            href="/user/Katarina"
+            className="px-2.5 py-1 rounded-full bg-pink-500/10 text-pink-400 border border-pink-500/20 font-medium hover:bg-pink-500/20 transition-colors"
+          >
+            Katarina
+          </Link>
         </div>
 
         {/* HAMBURGERKNAPP (KUN PA MOBIL) */}
