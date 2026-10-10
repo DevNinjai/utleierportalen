@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabaseClient';
+import { supabase } from '../../lib/supabaseClient';
 import { PlusCircle, Wallet, Calendar, User, ArrowUpRight, Trash2, RefreshCw, CheckCircle2 } from 'lucide-react';
 
 interface Income {
