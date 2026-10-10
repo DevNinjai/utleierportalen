@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
 import { supabase } from '../../lib/supabaseClient';
-import { History, Search, Filter, Trash2, RefreshCw, PlusCircle, Calendar, LayoutDashboard, Wallet, Receipt, PiggyBank } from 'lucide-react';
+import { History, Search, Filter, Trash2, RefreshCw, PlusCircle, Calendar, Download } from 'lucide-react';
 
 interface Transaction {
   id: string;
@@ -107,9 +106,48 @@ export default function TransactionsPage() {
 
   const totalFilteredAmount = filteredTransactions.reduce((acc, curr) => acc + curr.amount, 0);
 
+  // Eksporter til CSV
+  const handleExportCSV = () => {
+    if (filteredTransactions.length === 0) {
+      alert('Ingen transaksjoner å eksportere.');
+      return;
+    }
+
+    const headers = ['Dato', 'Beskrivelse', 'Belop', 'Kategori'];
+    const rows = filteredTransactions.map((tx) => {
+      const category = categories.find((c) => c.id === tx.category_id);
+      return [
+        tx.date,
+        `"${tx.description.replace(/"/g, '""')}"`,
+        tx.amount,
+        `"${category ? category.name : 'Generelt'}"`,
+      ];
+    });
+
+    const csvContent =
+      'data:text/csv;charset=utf-8,\uFEFF' +
+      [headers.join(';'), ...rows.map((e) => e.join(';'))].join('\n');
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `budsy-transaksjoner-${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="p-4 max-w-7xl mx-auto space-y-4">
-     
+      {/* TITTEL */}
+      <div className="border-b border-slate-800 pb-3">
+        <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+          <History className="w-5 h-5 text-amber-400" />
+          Transaksjonslogg & Forbruk
+        </h1>
+        <p className="text-xs text-slate-400">Oversikt og historikk over alle variable kjøp</p>
+      </div>
+
       {/* REGISTRERING OG SKJEMA */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* HURTIGREGISTRERING SKJEMA */}
@@ -214,12 +252,21 @@ export default function TransactionsPage() {
             </div>
           </div>
 
-          {/* VISNING AV SUMMER OG ANTALL */}
-          <div className="flex justify-between items-center text-xs text-slate-400 px-1">
+          {/* VISNING AV SUMMER OG EKSPORTKNAPP */}
+          <div className="flex flex-wrap justify-between items-center gap-2 text-xs text-slate-400 px-1">
             <span>Viser {filteredTransactions.length} transaksjoner</span>
-            <span>
-              Sum visning: <strong className="text-amber-400">{totalFilteredAmount.toLocaleString('no-NO')} kr</strong>
-            </span>
+            <div className="flex items-center gap-3">
+              <span>
+                Sum visning: <strong className="text-amber-400">{totalFilteredAmount.toLocaleString('no-NO')} kr</strong>
+              </span>
+              <button
+                onClick={handleExportCSV}
+                className="flex items-center gap-1 bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1 rounded border border-slate-700 transition-colors cursor-pointer"
+              >
+                <Download className="w-3.5 h-3.5 text-emerald-400" />
+                Eksporter CSV
+              </button>
+            </div>
           </div>
 
           {/* LISTE OVER TRANSAKSJONER */}
