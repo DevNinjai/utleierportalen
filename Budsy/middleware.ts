@@ -1,7 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  // Slipper forespørsler igjennom uten hard omdirigering på server-nivå
   return NextResponse.next();
 }
 
