@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
-import { History, Search, Filter, Trash2, RefreshCw, PlusCircle, Calendar, Download } from 'lucide-react';
+import { History, Search, Filter, Trash2, RefreshCw, PlusCircle, Calendar, Download, User } from 'lucide-react';
 
 interface Transaction {
   id: string;
@@ -20,39 +20,57 @@ interface Category {
   budget_limit: number;
 }
 
+interface UserProfile {
+  id: string;
+  name: string;
+  color_code: string;
+}
+
 export default function TransactionsPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [users, setUsers] = useState<UserProfile[]>([]);
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [submitting, setSubmitting] = useState<boolean>(false);
 
-  // Søk og filtrering
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('ALL');
 
-  // Skjemafelt for ny transaksjon
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [categoryId, setCategoryId] = useState('');
 
-  // Hent data fra Supabase
   const fetchData = async () => {
     setLoading(true);
 
-    // 1. Hent kategorier
+    // Hent kategorier
     const { data: catData } = await supabase.from('categories').select('*');
     if (catData) setCategories(catData as Category[]);
 
-    // 2. Hent transaksjoner
+    // Hent brukere
+    const { data: userData } = await supabase.from('users').select('*');
+    if (userData) setUsers(userData as UserProfile[]);
+
+    // Hent innlogget bruker fra auth
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    if (authUser) {
+      const { data: dbUser } = await supabase
+        .from('users')
+        .select('*')
+        .eq('auth_user_id', authUser.id)
+        .single();
+      if (dbUser) setCurrentUser(dbUser as UserProfile);
+    }
+
+    // Hent transaksjoner
     const { data: txData, error } = await supabase
       .from('transactions')
       .select('*')
       .order('date', { ascending: false });
 
-    if (error) {
-      console.error('Feil ved henting av transaksjoner:', error.message);
-    } else if (txData) {
+    if (!error && txData) {
       setTransactions(txData as Transaction[]);
     }
 
@@ -63,18 +81,19 @@ export default function TransactionsPage() {
     fetchData();
   }, []);
 
-  // Lagre ny transaksjon
   const handleAddTransaction = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!amount || !description) return;
 
     setSubmitting(true);
+
     const { error } = await supabase.from('transactions').insert([
       {
         amount: parseFloat(amount),
         description,
         date,
         category_id: categoryId || null,
+        user_id: currentUser ? currentUser.id : null, // Automatisk kobling til innlogget bruker!
       },
     ]);
 
@@ -90,14 +109,12 @@ export default function TransactionsPage() {
     }
   };
 
-  // Slett transaksjon
   const handleDelete = async (id: string) => {
     if (!confirm('Vil du slette denne transaksjonen?')) return;
     const { error } = await supabase.from('transactions').delete().eq('id', id);
     if (!error) fetchData();
   };
 
-  // Filtreringslogikk
   const filteredTransactions = transactions.filter((tx) => {
     const matchesSearch = tx.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === 'ALL' || tx.category_id === selectedCategory;
@@ -106,21 +123,22 @@ export default function TransactionsPage() {
 
   const totalFilteredAmount = filteredTransactions.reduce((acc, curr) => acc + curr.amount, 0);
 
-  // Eksporter til CSV
   const handleExportCSV = () => {
     if (filteredTransactions.length === 0) {
       alert('Ingen transaksjoner å eksportere.');
       return;
     }
 
-    const headers = ['Dato', 'Beskrivelse', 'Belop', 'Kategori'];
+    const headers = ['Dato', 'Beskrivelse', 'Belop', 'Kategori', 'Registrert_Av'];
     const rows = filteredTransactions.map((tx) => {
       const category = categories.find((c) => c.id === tx.category_id);
+      const txUser = users.find((u) => u.id === tx.user_id);
       return [
         tx.date,
         `"${tx.description.replace(/"/g, '""')}"`,
         tx.amount,
         `"${category ? category.name : 'Generelt'}"`,
+        `"${txUser ? txUser.name : 'Ukjent'}"`,
       ];
     });
 
@@ -139,18 +157,24 @@ export default function TransactionsPage() {
 
   return (
     <div className="p-4 max-w-7xl mx-auto space-y-4">
-      {/* TITTEL */}
-      <div className="border-b border-slate-800 pb-3">
-        <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-          <History className="w-5 h-5 text-amber-400" />
-          Transaksjonslogg & Forbruk
-        </h1>
-        <p className="text-xs text-slate-400">Oversikt og historikk over alle variable kjøp</p>
+      <div className="border-b border-slate-800 pb-3 flex justify-between items-center">
+        <div>
+          <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+            <History className="w-5 h-5 text-amber-400" />
+            Transaksjonslogg & Forbruk
+          </h1>
+          <p className="text-xs text-slate-400">Oversikt og historikk over alle variable kjøp</p>
+        </div>
+
+        {currentUser && (
+          <span className="text-xs text-slate-400 bg-slate-800/80 px-3 py-1 rounded-full border border-slate-700 flex items-center gap-1.5">
+            Registrerer som: <strong className="text-emerald-400">{currentUser.name}</strong>
+          </span>
+        )}
       </div>
 
-      {/* REGISTRERING OG SKJEMA */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* HURTIGREGISTRERING SKJEMA */}
+        {/* SKJEMA */}
         <div className="bg-[#1e293b] p-4 rounded-xl border border-slate-800 h-fit space-y-3">
           <h3 className="text-xs font-semibold text-slate-200 flex items-center gap-1.5 uppercase tracking-wider">
             <PlusCircle className="w-4 h-4 text-emerald-400" /> Registrer Ny Utgift
@@ -213,16 +237,15 @@ export default function TransactionsPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-2 rounded transition-colors flex items-center justify-center gap-1"
+              className="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-2 rounded transition-colors flex items-center justify-center gap-1 cursor-pointer"
             >
               {submitting ? <RefreshCw className="w-4 h-4 animate-spin" /> : 'Lagre Transaksjon'}
             </button>
           </form>
         </div>
 
-        {/* TRANSAKSJONSTABELL MED SØK OG FILTER */}
+        {/* TRANSAKSJONSTABELL */}
         <div className="md:col-span-2 bg-[#1e293b] p-4 rounded-xl border border-slate-800 space-y-3">
-          {/* SØKEBARR OG KATEGORIFILTER */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 pb-2 border-b border-slate-800">
             <div className="relative">
               <Search className="w-4 h-4 text-slate-400 absolute left-2.5 top-2.5" />
@@ -252,12 +275,11 @@ export default function TransactionsPage() {
             </div>
           </div>
 
-          {/* VISNING AV SUMMER OG EKSPORTKNAPP */}
           <div className="flex flex-wrap justify-between items-center gap-2 text-xs text-slate-400 px-1">
             <span>Viser {filteredTransactions.length} transaksjoner</span>
             <div className="flex items-center gap-3">
               <span>
-                Sum visning: <strong className="text-amber-400">{totalFilteredAmount.toLocaleString('no-NO')} kr</strong>
+                Sum: <strong className="text-amber-400">{totalFilteredAmount.toLocaleString('no-NO')} kr</strong>
               </span>
               <button
                 onClick={handleExportCSV}
@@ -269,7 +291,6 @@ export default function TransactionsPage() {
             </div>
           </div>
 
-          {/* LISTE OVER TRANSAKSJONER */}
           {loading ? (
             <div className="flex items-center justify-center p-8 text-slate-400 text-xs">
               <RefreshCw className="w-4 h-4 animate-spin mr-2" /> Laster historikk...
@@ -282,6 +303,7 @@ export default function TransactionsPage() {
             <div className="divide-y divide-slate-800/60 text-xs">
               {filteredTransactions.map((tx) => {
                 const category = categories.find((c) => c.id === tx.category_id);
+                const txUser = users.find((u) => u.id === tx.user_id);
 
                 return (
                   <div
@@ -301,6 +323,17 @@ export default function TransactionsPage() {
                             }}
                           >
                             {category.name}
+                          </span>
+                        )}
+                        {txUser && (
+                          <span
+                            className={`px-2 py-0.5 text-[10px] rounded-full font-semibold border ${
+                              txUser.name === 'Kenneth'
+                                ? 'bg-blue-500/10 text-blue-400 border-blue-500/30'
+                                : 'bg-pink-500/10 text-pink-400 border-pink-500/30'
+                            }`}
+                          >
+                            {txUser.name}
                           </span>
                         )}
                       </div>
