@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { supabase } from '../../lib/supabaseClient';
 import { Lock, Mail, LogIn, RefreshCw } from 'lucide-react';
 
@@ -9,6 +10,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,11 +30,12 @@ export default function LoginPage() {
       }
 
       if (data?.session) {
-        // Vellykket innlogging - tving en full omlasting til Hovedsiden
-        window.location.assign('/');
+        // Vellykket innlogging - ruter til Hovedsiden
+        router.push('/');
+        router.refresh();
       } else {
         setLoading(false);
-        setErrorMsg('Kunne ikke opprette sesjon. Sjekk brukernavn og passord.');
+        setErrorMsg('Kunne ikke opprette sesjon. Sjekk at e-post og passord er riktig.');
       }
     } catch (err: any) {
       setLoading(false);
