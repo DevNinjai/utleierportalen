@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { supabase } from '../../lib/supabaseClient';
-import { PiggyBank, PlusCircle, Trash2, RefreshCw, LayoutDashboard, Wallet, Receipt, Target, ArrowUpRight, History } from 'lucide-react';
+import { Receipt, PlusCircle, Trash2, Shield, RefreshCw, LayoutDashboard, Wallet, PiggyBank, History } from 'lucide-react';
 
 interface FixedExpense {
   id: string;
