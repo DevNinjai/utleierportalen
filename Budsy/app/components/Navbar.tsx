@@ -12,9 +12,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
 
-  // Skjul Navbar dersom vi står på login-siden
-  if (pathname === '/login') return null;
-
+  // ALLTID KJØR EFFECT HOOKS ØVERST (INGEN EARLY RETURNS FØR DETTE)
   useEffect(() => {
     const fetchAuthUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -59,6 +57,9 @@ export default function Navbar() {
     { name: 'Sparing', href: '/savings', icon: PiggyBank },
     { name: 'Logg', href: '/transactions', icon: History },
   ];
+
+  // SKJUL NAVBAR DERSOM VI STÅR PÅ LOGIN-SIDEN (MÅ LIGGE ETTER ALLE HOOKS!)
+  if (pathname === '/login') return null;
 
   return (
     <header className="border-b border-slate-800 bg-[#1e293b]/50 backdrop-blur sticky top-0 z-50">
