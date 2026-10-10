@@ -1,56 +1,25 @@
-import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
-export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
-  });
+export function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return request.cookies.get(name)?.value;
-        },
-        set(name: string, value: string, options: CookieOptions) {
-          request.cookies.set({ name, value, ...options });
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          });
-          response.cookies.set({ name, value, ...options });
-        },
-        remove(name: string, options: CookieOptions) {
-          request.cookies.set({ name, value: '', ...options });
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          });
-          response.cookies.set({ name, value: '', ...options });
-        },
-      },
-    }
+  // Sjekk om det finnes noen Supabase auth-kake (sb-*-auth-token)
+  const cookies = request.cookies.getAll();
+  const hasAuthCookie = cookies.some(
+    (c) => c.name.startsWith('sb-') && c.name.endsWith('-auth-token')
   );
 
-  const { data: { session } } = await supabase.auth.getSession();
-
-  // Hvis brukeren IKKE er innlogget og prøver å besøke en beskyttet side
-  if (!session && request.nextUrl.pathname !== '/login') {
+  // Hvis uinnlogget og prøver å gå til beskyttet side -> send til /login
+  if (!hasAuthCookie && pathname !== '/login') {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  // Hvis brukeren ER innlogget og besøker /login
-  if (session && request.nextUrl.pathname === '/login') {
+  // Hvis innlogget og prøver å gå til /login -> send til /
+  if (hasAuthCookie && pathname === '/login') {
     return NextResponse.redirect(new URL('/', request.url));
   }
 
-  return response;
+  return NextResponse.next();
 }
 
 export const config = {
