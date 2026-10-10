@@ -62,17 +62,23 @@ export default function Dashboard() {
         </div>
 
         {/* MENYLENKER */}
-        <nav className="flex items-center gap-1 bg-[#1e293b] p-1 rounded-lg border border-slate-800 text-xs font-medium">
-          <Link href="/" className="px-3 py-1.5 rounded-md bg-emerald-500/10 text-emerald-400 font-semibold flex items-center gap-1">
-            <LayoutDashboard className="w-3.5 h-3.5" /> Dashboard
-          </Link>
-          <Link href="/incomes" className="px-3 py-1.5 rounded-md text-slate-300 hover:text-white hover:bg-slate-800 transition-colors flex items-center gap-1">
-            <Wallet className="w-3.5 h-3.5" /> Inntekter
-          </Link>
-          <Link href="/fixed-expenses" className="px-3 py-1.5 rounded-md text-slate-300 hover:text-white hover:bg-slate-800 transition-colors flex items-center gap-1">
-            <Receipt className="w-3.5 h-3.5" /> Regningspott
-          </Link>
-        </nav>
+<nav className="flex items-center gap-1 bg-[#1e293b] p-1 rounded-lg border border-slate-800 text-xs font-medium">
+  <Link href="/" className="px-3 py-1.5 rounded-md text-slate-300 hover:text-white hover:bg-slate-800 transition-colors flex items-center gap-1">
+    <LayoutDashboard className="w-3.5 h-3.5" /> Dashboard
+  </Link>
+  <Link href="/incomes" className="px-3 py-1.5 rounded-md text-slate-300 hover:text-white hover:bg-slate-800 transition-colors flex items-center gap-1">
+    <Wallet className="w-3.5 h-3.5" /> Inntekter
+  </Link>
+  <Link href="/fixed-expenses" className="px-3 py-1.5 rounded-md text-slate-300 hover:text-white hover:bg-slate-800 transition-colors flex items-center gap-1">
+    <Receipt className="w-3.5 h-3.5" /> Regningspott
+  </Link>
+  <Link href="/savings" className="px-3 py-1.5 rounded-md text-slate-300 hover:text-white hover:bg-slate-800 transition-colors flex items-center gap-1">
+    <PiggyBank className="w-3.5 h-3.5" /> Sparing
+  </Link>
+  <Link href="/transactions" className="px-3 py-1.5 rounded-md text-slate-300 hover:text-white hover:bg-slate-800 transition-colors flex items-center gap-1">
+    <History className="w-3.5 h-3.5" /> Logg
+  </Link>
+</nav>
 
         <div className="flex gap-2 text-xs">
           <span className="px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 font-medium">Kenneth</span>
