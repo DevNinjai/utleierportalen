@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { supabase } from '../../lib/supabaseClient';
 import { Lock, Mail, LogIn, RefreshCw } from 'lucide-react';
 
@@ -10,25 +9,23 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
-  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setErrorMsg('');
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    setLoading(false);
-
     if (error) {
+      setLoading(false);
       setErrorMsg('Feil e-post eller passord: ' + error.message);
-    } else {
-      router.push('/');
-      router.refresh();
+    } else if (data.session) {
+      // Tving full re-load slik at kaker/session blir fanget opp av server og middleware umiddelbart
+      window.location.href = '/';
     }
   };
 
@@ -44,7 +41,7 @@ export default function LoginPage() {
         </div>
 
         {errorMsg && (
-          <div className="bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs p-3 rounded-lg text-center">
+          <div className="bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs p-3 rounded-lg text-center font-medium">
             {errorMsg}
           </div>
         )}
