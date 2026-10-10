@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { supabase } from '../../lib/supabaseClient';
 import { Lock, Mail, LogIn, RefreshCw } from 'lucide-react';
 
@@ -10,7 +9,6 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
-  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,6 +16,7 @@ export default function LoginPage() {
     setErrorMsg('');
 
     try {
+      // 1. Logg inn hos Supabase Auth
       const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password: password,
@@ -25,17 +24,16 @@ export default function LoginPage() {
 
       if (error) {
         setLoading(false);
-        setErrorMsg(error.message);
+        setErrorMsg('Feil e-post eller passord: ' + error.message);
         return;
       }
 
       if (data?.session) {
-        // Vellykket innlogging - ruter til Hovedsiden
-        router.push('/');
-        router.refresh();
+        // 2. Vellykket innlogging - tving full omlasting til forsiden
+        window.location.assign('/');
       } else {
         setLoading(false);
-        setErrorMsg('Kunne ikke opprette sesjon. Sjekk at e-post og passord er riktig.');
+        setErrorMsg('Kunne ikke hente brukerøkten. Prøv igjen.');
       }
     } catch (err: any) {
       setLoading(false);
