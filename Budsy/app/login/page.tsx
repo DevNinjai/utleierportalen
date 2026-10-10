@@ -15,17 +15,28 @@ export default function LoginPage() {
     setLoading(true);
     setErrorMsg('');
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password: password,
+      });
 
-    if (error) {
+      if (error) {
+        setLoading(false);
+        setErrorMsg(error.message);
+        return;
+      }
+
+      if (data?.session) {
+        // Vellykket innlogging - tving en full omlasting til Hovedsiden
+        window.location.assign('/');
+      } else {
+        setLoading(false);
+        setErrorMsg('Kunne ikke opprette sesjon. Sjekk brukernavn og passord.');
+      }
+    } catch (err: any) {
       setLoading(false);
-      setErrorMsg('Feil e-post eller passord: ' + error.message);
-    } else if (data.session) {
-      // Tving full re-load slik at kaker/session blir fanget opp av server og middleware umiddelbart
-      window.location.href = '/';
+      setErrorMsg('Det oppstod en uventet feil: ' + (err?.message || err));
     }
   };
 
@@ -83,7 +94,7 @@ export default function LoginPage() {
             className="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2 cursor-pointer text-sm mt-2"
           >
             {loading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <LogIn className="w-4 h-4" />}
-            Logg Inn
+            {loading ? 'Logger inn...' : 'Logg Inn'}
           </button>
         </form>
       </div>
