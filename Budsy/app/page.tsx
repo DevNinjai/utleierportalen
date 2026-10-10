@@ -150,7 +150,19 @@ export default function Dashboard() {
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '8px', fontSize: '12px' }} />
+                <Tooltip
+  contentStyle={{
+    backgroundColor: '#0f172a',
+    borderColor: '#334155',
+    borderRadius: '8px',
+    color: '#f8fafc',
+    fontSize: '12px',
+    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.5)',
+  }}
+  itemStyle={{ color: '#10b981', fontWeight: 'bold' }}
+  labelStyle={{ color: '#94a3b8' }}
+  formatter={(value: any) => [`${Number(value).toLocaleString('no-NO')} kr`, 'Forbruk']}
+/>
               </PieChart>
             </ResponsiveContainer>
           </div>
