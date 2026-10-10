@@ -1,15 +1,14 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { supabase } from './lib/supabaseClient';
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  // Hent auth-token fra kaker dersom det finnes
-  const hasAuthToken = request.cookies.getAll().some(cookie => 
+  // Sjekk om det finnes en Supabase auth-cookie
+  const hasAuthToken = request.cookies.getAll().some((cookie) =>
     cookie.name.includes('sb-') && cookie.name.includes('-auth-token')
   );
 
-  // Hvis brukeren Ikke er innlogget og prøver å besøke noe annet enn /login
+  // Hvis brukeren IKKE er innlogget og prøver å besøke en beskyttet side
   if (!hasAuthToken && pathname !== '/login') {
     return NextResponse.redirect(new URL('/login', request.url));
   }
