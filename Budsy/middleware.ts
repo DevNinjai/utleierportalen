@@ -1,56 +1,25 @@
-import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import { supabase } from './lib/supabaseClient';
 
 export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
-  });
+  const pathname = request.nextUrl.pathname;
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return request.cookies.get(name)?.value;
-        },
-        set(name: string, value: string, options: CookieOptions) {
-          request.cookies.set({ name, value, ...options });
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          });
-          response.cookies.set({ name, value, ...options });
-        },
-        remove(name: string, options: CookieOptions) {
-          request.cookies.set({ name, value: '', ...options });
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          });
-          response.cookies.set({ name, value: '', ...options });
-        },
-      },
-    }
+  // Hent auth-token fra kaker dersom det finnes
+  const hasAuthToken = request.cookies.getAll().some(cookie => 
+    cookie.name.includes('sb-') && cookie.name.includes('-auth-token')
   );
 
-  const { data: { session } } = await supabase.auth.getSession();
-
-  // Hvis brukeren ikke er innlogget og prøver å besøke en beskyttet side
-  if (!session && request.nextUrl.pathname !== '/login') {
+  // Hvis brukeren Ikke er innlogget og prøver å besøke noe annet enn /login
+  if (!hasAuthToken && pathname !== '/login') {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  // Hvis brukeren allerede er innlogget og besøker /login
-  if (session && request.nextUrl.pathname === '/login') {
+  // Hvis brukeren ER innlogget og besøker /login
+  if (hasAuthToken && pathname === '/login') {
     return NextResponse.redirect(new URL('/', request.url));
   }
 
-  return response;
+  return NextResponse.next();
 }
 
 export const config = {
