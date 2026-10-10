@@ -1,9 +1,9 @@
 import './globals.css';
-import React from 'react';
+import Navbar from './components/Navbar';
 
 export const metadata = {
-  title: 'Budsy | Privatøkonomi',
-  description: 'Budsjettering for Kenneth og Katarina',
+  title: 'Budsy - Økonomioversikt',
+  description: 'Privatøkonomi for Kenneth og Katarina',
 };
 
 export default function RootLayout({
@@ -12,9 +12,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="no" className="dark">
+    <html lang="no">
       <body className="bg-[#0f172a] text-slate-100 min-h-screen">
-        {children}
+        <Navbar />
+        <main>{children}</main>
       </body>
     </html>
   );
