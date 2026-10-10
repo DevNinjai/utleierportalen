@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { supabase } from '../lib/supabaseClient';
+import { supabase } from '../../lib/supabaseClient';
 import { PlusCircle, Wallet, Calendar, ArrowUpRight, Trash2, RefreshCw, LayoutDashboard, Receipt, PiggyBank, History } from 'lucide-react';
 
 interface Income {
