@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../lib/supabaseClient';
-import { Wallet, ArrowUpRight, ArrowDownRight, RefreshCw, PlusCircle, PieChart } from 'lucide-react';
+import { ArrowUpRight, ArrowDownRight, RefreshCw, PieChart } from 'lucide-react';
 import { PieChart as RePieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
 interface Transaction {
@@ -33,37 +33,41 @@ export default function Dashboard() {
     setMounted(true);
 
     const checkUserAndFetch = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        router.push('/login');
-        return;
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          router.push('/login');
+          return;
+        }
+
+        setLoading(true);
+
+        // Hent transaksjoner
+        const { data: txData } = await supabase.from('transactions').select('*');
+        if (txData) setTransactions(txData as Transaction[]);
+
+        // Hent kategorier
+        const { data: catData } = await supabase.from('categories').select('*');
+        if (catData) setCategories(catData as Category[]);
+
+        // Hent inntekter
+        const { data: incData } = await supabase.from('incomes').select('*');
+        if (incData) {
+          const sumInc = incData.reduce((acc, curr) => acc + (curr.net_amount || 0), 0);
+          setTotalIncome(sumInc);
+        }
+
+        // Hent faste utgifter
+        const { data: expData } = await supabase.from('fixed_expenses').select('*');
+        if (expData) {
+          const sumExp = expData.reduce((acc, curr) => acc + (curr.amount || 0), 0);
+          setTotalFixed(sumExp);
+        }
+      } catch (err) {
+        console.error('Feil under henting av data:', err);
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(true);
-
-      // Hent transaksjoner
-      const { data: txData } = await supabase.from('transactions').select('*');
-      if (txData) setTransactions(txData as Transaction[]);
-
-      // Hent kategorier
-      const { data: catData } = await supabase.from('categories').select('*');
-      if (catData) setCategories(catData as Category[]);
-
-      // Hent inntekter
-      const { data: incData } = await supabase.from('incomes').select('*');
-      if (incData) {
-        const sumInc = incData.reduce((acc, curr) => acc + (curr.net_amount || 0), 0);
-        setTotalIncome(sumInc);
-      }
-
-      // Hent faste utgifter
-      const { data: expData } = await supabase.from('fixed_expenses').select('*');
-      if (expData) {
-        const sumExp = expData.reduce((acc, curr) => acc + (curr.amount || 0), 0);
-        setTotalFixed(sumExp);
-      }
-
-      setLoading(false);
     };
 
     checkUserAndFetch();
@@ -77,15 +81,15 @@ export default function Dashboard() {
     );
   }
 
-  const totalSpent = transactions.reduce((acc, curr) => acc + curr.amount, 0);
+  const totalSpent = transactions.reduce((acc, curr) => acc + (curr.amount || 0), 0);
   const remainingBudget = totalIncome - totalFixed - totalSpent;
 
   // Grupper utgifter per kategori for kakediagrammet
   const chartData = categories.map((cat) => {
     const value = transactions
       .filter((t) => t.category_id === cat.id)
-      .reduce((acc, curr) => acc + curr.amount, 0);
-    return { name: cat.name, value, color: cat.color };
+      .reduce((acc, curr) => acc + (curr.amount || 0), 0);
+    return { name: cat.name, value, color: cat.color || '#10b981' };
   }).filter((item) => item.value > 0);
 
   return (
